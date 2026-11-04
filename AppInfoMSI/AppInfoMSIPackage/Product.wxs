@@ -1,0 +1,31 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+    <!--
+    MSIProductVersion is defined in AppInfoMSIPackage.iswixproj as 0.0.1 for local desktop builds.  
+    You should pass in the MSBuild Property 'MSIProductVersion' to override it during an automated build.
+    See http://msdn.microsoft.com/en-us/library/windows/desktop/aa370859%28v=vs.85%29.aspx for information on allowable values.
+  
+    The Product@Id attribute (ProductCode Property) will be a random GUID for each build.  This is to support "Major Upgrades" where each install 
+    is a seamless uninstall/reinstall.
+    -->
+    <Package Name="AppInfoMSI" Language="1033" Version="$(var.MSIProductVersion)" Manufacturer="AppInfoMSI" UpgradeCode="B26C7AC1-64B7-48B2-A643-5C6203663E6B">
+        <MediaTemplate EmbedCab="yes" />
+        <!-- Major Upgrade Rule to disallow downgrades -->
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [AppInfoMSI] is already installed." />
+        <Icon Id="Icon.ico" SourceFile="Resources\Icon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="Icon.ico"></Property>
+        <UI Id="UI">
+            <ui:WixUI Id="WixUI_FeatureTree" />
+            <UIRef Id="WixUI_ErrorProgressText" />
+        </UI>
+        <Property Id="DISABLEADVTSHORTCUTS" Value="1"></Property>
+        <StandardDirectory Id="ProgramFiles6432Folder">
+            <Directory Id="CompanyFolder" Name="My Company">
+                <Directory Id="INSTALLLOCATION" Name="AppInfoMSI">
+                </Directory>
+            </Directory>
+        </StandardDirectory>
+        <Feature Id="AppInfoMSI" Title="AppInfoMSI" Description="Installs all the files needed for AppInfoMSI" Level="1" AllowAdvertise="no" ConfigurableDirectory="INSTALLLOCATION">
+        </Feature>
+        <EnsureTable Id="FeatureComponents"/>
+    </Package>
+</Wix>

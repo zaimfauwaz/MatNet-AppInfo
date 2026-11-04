@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AppInfoGUI/AppInfoGUI.csproj" />
+  <Project Path="AppInfoMSI/AppInfoMSIBundle/AppInfoMSIBundle.iswixproj" Type="3a7b4e67-3cbb-402a-ac31-8ef9dccef68e">
+    <Platform Solution="*|Any CPU" Project="x64" />
+  </Project>
+  <Project Path="AppInfoMSI/AppInfoMSIPackage/AppInfoMSIPackage.iswixproj" Type="3a7b4e67-3cbb-402a-ac31-8ef9dccef68e">
+    <Platform Solution="*|Any CPU" Project="x64" />
+  </Project>
+</Solution>
