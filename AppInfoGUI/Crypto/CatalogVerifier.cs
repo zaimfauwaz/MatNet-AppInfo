@@ -7,19 +7,21 @@ public static class CatalogVerifier
 {
     const uint NoSignature = 0x800B0100;
 
-    public static uint Verify(string path)
+    public static uint Verify(string path, out string catalogFile)
     {
         // Catalogs use either SHA-256 or SHA-1, so try both
         foreach (string algorithm in new[] { "SHA256", "SHA1" })
         {
-            uint code = VerifyWith(path, algorithm);
+            uint code = VerifyWith(path, algorithm, out catalogFile);
             if (code != NoSignature) return code;
         }
+        catalogFile = "";
         return NoSignature;
     }
 
-    static uint VerifyWith(string path, string algorithm)
+    static uint VerifyWith(string path, string algorithm, out string catalogFile)
     {
+        catalogFile = "";
         using var file = File.OpenRead(path);
         IntPtr fileHandle = file.SafeFileHandle.DangerousGetHandle();
 
@@ -47,6 +49,8 @@ public static class CatalogVerifier
                 var info = new WinCatalog.CatalogInfo { Size = (uint)Marshal.SizeOf<WinCatalog.CatalogInfo>() };
                 if (!WinCatalog.CryptCATCatalogInfoFromContext(catInfo, ref info, 0))
                     return NoSignature;
+
+                catalogFile = info.CatalogFile;
 
                 // 5. Ask Windows to verify the file against that catalog
                 return CheckAgainstCatalog(path, hash, info.CatalogFile, catAdmin);

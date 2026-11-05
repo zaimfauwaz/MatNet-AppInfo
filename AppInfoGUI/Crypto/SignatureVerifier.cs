@@ -1,17 +1,45 @@
-﻿namespace AppInfoGUI.Crypto;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+
+namespace AppInfoGUI.Crypto;
 
 public static class SignatureVerifier
 {
     const uint NoSignature = 0x800B0100;
 
-    public static string Verify(string path)
+    public static SignatureResult Check(string path)
     {
+        var result = new SignatureResult { SignatureType = "Embedded" };
+        string signedFile = path;
+
         uint code = EmbeddedVerifier.Verify(path);
 
         if (code == NoSignature)
-            code = CatalogVerifier.Verify(path);
+        {
+            code = CatalogVerifier.Verify(path, out string catalogFile);
+            result.SignatureType = code == NoSignature ? "None" : "Catalog";
 
-        return Describe(code);
+            if (code != NoSignature)
+            {
+                signedFile = catalogFile;
+                result.CatalogFile = Path.GetFileName(catalogFile);
+            }
+        }
+
+        result.IsValid = code == 0;
+        result.Verdict = Describe(code);
+
+        var signer = SignatureReader.GetSigner(signedFile);
+        if (signer != null)
+        {
+            result.Publisher = signer.GetNameInfo(X509NameType.SimpleName, false);
+            result.Issuer = signer.GetNameInfo(X509NameType.SimpleName, true);
+            result.Thumbprint = signer.Thumbprint;
+            result.ValidFrom = signer.NotBefore.ToString("yyyy-MM-dd");
+            result.ValidTo = signer.NotAfter.ToString("yyyy-MM-dd");
+        }
+
+        return result;
     }
 
     static string Describe(uint code) => code switch
