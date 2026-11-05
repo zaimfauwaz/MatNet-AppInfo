@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Security.Cryptography.X509Certificates;
 
 namespace AppInfoGUI.Crypto;
 
@@ -29,14 +28,14 @@ public static class SignatureVerifier
         result.IsValid = code == 0;
         result.Verdict = Describe(code);
 
-        var signer = SignatureReader.GetSigner(signedFile);
-        if (signer != null)
+        try
         {
-            result.Publisher = signer.GetNameInfo(X509NameType.SimpleName, false);
-            result.Issuer = signer.GetNameInfo(X509NameType.SimpleName, true);
-            result.Thumbprint = signer.Thumbprint;
-            result.ValidFrom = signer.NotBefore.ToString("yyyy-MM-dd");
-            result.ValidTo = signer.NotAfter.ToString("yyyy-MM-dd");
+            using var signer = SignatureReader.GetSigner(signedFile);
+            if (signer != null)
+                CertificateDetails.Fill(result, signer);
+        }
+        catch (Exception)
+        {
         }
 
         return result;

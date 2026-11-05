@@ -58,12 +58,18 @@ namespace AppInfoGUI
             ShowBanner(r.Verdict, color);
 
             TypeBox.Text = r.SignatureType;
+            CatalogBox.Text = r.CatalogFile;
             PublisherBox.Text = r.Publisher;
+            SubjectBox.Text = r.Subject;
             IssuerBox.Text = r.Issuer;
+            ChainBox.Text = r.Chain;
             ThumbprintBox.Text = r.Thumbprint;
+            SerialBox.Text = r.SerialNumber;
+            AlgorithmBox.Text = r.Algorithm;
             ValidFromBox.Text = r.ValidFrom;
             ValidToBox.Text = r.ValidTo;
-            CatalogBox.Text = r.CatalogFile;
+            ExpiryBox.Text = r.Expiry;
+            ValidationBox.Text = r.Validation;
         }
 
         void ShowBanner(string text, Brush color)
@@ -75,12 +81,18 @@ namespace AppInfoGUI
         void ClearDetails()
         {
             TypeBox.Text = "";
+            CatalogBox.Text = "";
             PublisherBox.Text = "";
+            SubjectBox.Text = "";
             IssuerBox.Text = "";
+            ChainBox.Text = "";
             ThumbprintBox.Text = "";
+            SerialBox.Text = "";
+            AlgorithmBox.Text = "";
             ValidFromBox.Text = "";
             ValidToBox.Text = "";
-            CatalogBox.Text = "";
+            ExpiryBox.Text = "";
+            ValidationBox.Text = "";
         }
 
     }

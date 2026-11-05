@@ -12,5 +12,11 @@ namespace AppInfoGUI.Crypto
         public string ValidFrom { get; set; } = "Not available";
         public string ValidTo { get; set; } = "Not available";
         public string CatalogFile { get; set; } = "Not available";
+        public string Subject { get; set; } = "Not available";
+        public string SerialNumber { get; set; } = "Not available";
+        public string Algorithm { get; set; } = "Not available";
+        public string Expiry { get; set; } = "Not available";
+        public string Chain { get; set; } = "Not available";
+        public string Validation { get; set; } = "Not available";
     }
 }

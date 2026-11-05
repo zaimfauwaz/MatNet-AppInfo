@@ -44,54 +44,81 @@
                     </Border>
 
                     <!-- Signer details -->
-                    <Grid Grid.Row="2">
-                        <Grid.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="Gray"/>
-                                <Setter Property="Margin" Value="0,0,0,10"/>
-                            </Style>
-                            <Style TargetType="TextBox">
-                                <Setter Property="IsReadOnly" Value="True"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Margin" Value="0,0,0,10"/>
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="120"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="Gray"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
+                                </Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="IsReadOnly" Value="True"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Signature type"/>
-                        <TextBox x:Name="TypeBox" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Grid.Row="0" Text="Signature type"/>
+                            <TextBox x:Name="TypeBox" Grid.Row="0" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="1" Text="Publisher"/>
-                        <TextBox x:Name="PublisherBox" Grid.Row="1" Grid.Column="1"/>
+                            <TextBlock Grid.Row="1" Text="Catalog file"/>
+                            <TextBox x:Name="CatalogBox" Grid.Row="1" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="2" Text="Issuer"/>
-                        <TextBox x:Name="IssuerBox" Grid.Row="2" Grid.Column="1"/>
+                            <TextBlock Grid.Row="2" Text="Publisher"/>
+                            <TextBox x:Name="PublisherBox" Grid.Row="2" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="3" Text="Thumbprint"/>
-                        <TextBox x:Name="ThumbprintBox" Grid.Row="3" Grid.Column="1"/>
+                            <TextBlock Grid.Row="3" Text="Subject"/>
+                            <TextBox x:Name="SubjectBox" Grid.Row="3" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="4" Text="Valid from"/>
-                        <TextBox x:Name="ValidFromBox" Grid.Row="4" Grid.Column="1"/>
+                            <TextBlock Grid.Row="4" Text="Issuer"/>
+                            <TextBox x:Name="IssuerBox" Grid.Row="4" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="5" Text="Valid to"/>
-                        <TextBox x:Name="ValidToBox" Grid.Row="5" Grid.Column="1"/>
+                            <TextBlock Grid.Row="5" Text="Chain"/>
+                            <TextBox x:Name="ChainBox" Grid.Row="5" Grid.Column="1"/>
 
-                        <TextBlock Grid.Row="6" Text="Catalog file"/>
-                        <TextBox x:Name="CatalogBox" Grid.Row="6" Grid.Column="1"/>
-                    </Grid>
+                            <TextBlock Grid.Row="6" Text="Thumbprint"/>
+                            <TextBox x:Name="ThumbprintBox" Grid.Row="6" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="7" Text="Serial number"/>
+                            <TextBox x:Name="SerialBox" Grid.Row="7" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="8" Text="Algorithm"/>
+                            <TextBox x:Name="AlgorithmBox" Grid.Row="8" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="9" Text="Valid from"/>
+                            <TextBox x:Name="ValidFromBox" Grid.Row="9" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="10" Text="Valid to"/>
+                            <TextBox x:Name="ValidToBox" Grid.Row="10" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="11" Text="Expiry"/>
+                            <TextBox x:Name="ExpiryBox" Grid.Row="11" Grid.Column="1"/>
+
+                            <TextBlock Grid.Row="12" Text="Extended Validation"/>
+                            <TextBox x:Name="ValidationBox" Grid.Row="12" Grid.Column="1"/>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem Header="VirusTotal">
