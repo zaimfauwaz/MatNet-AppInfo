@@ -115,7 +115,7 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Product Information (AI)">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid/>
             </TabItem>
             <TabItem Header="Digital Signatures">
                 <Grid Margin="16">
@@ -137,7 +137,7 @@
                     <!-- Verdict banner -->
                     <Border x:Name="VerdictBanner" Grid.Row="1" Background="LightGray"
                 CornerRadius="4" Padding="12" Margin="0,0,0,16">
-                        <TextBlock x:Name="VerdictText" Text="No file selected"
+                        <TextBlock x:Name="VerdictText" Text="No file selected" Foreground="Black"
                        FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
                     </Border>
 
@@ -151,6 +151,7 @@
                                 </Style>
                                 <Style TargetType="TextBox">
                                     <Setter Property="IsReadOnly" Value="True"/>
+                                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Window}}"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                     <Setter Property="Background" Value="Transparent"/>
                                     <Setter Property="TextWrapping" Value="Wrap"/>
@@ -220,7 +221,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="VirusTotal">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid/>
             </TabItem>
         </TabControl>
     </Grid>
