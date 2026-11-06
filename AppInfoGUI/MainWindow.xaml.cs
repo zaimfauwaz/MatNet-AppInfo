@@ -22,7 +22,12 @@ namespace AppInfoGUI
                 return;
             }
 
-            await LoadSignatureAsync(args[1]);
+            string path = args[1];
+
+            // Independent of each other, so a slow signature check never delays the details
+            Task details = LoadDetailsAsync(path);
+            Task signature = LoadSignatureAsync(path);
+            await Task.WhenAll(details, signature);
         }
 
         async Task LoadSignatureAsync(string path)
