@@ -32,7 +32,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TabControl Grid.ColumnSpan="2">
-            <TabItem Header="Application Details">
+            <TabItem x:Name="DetailsTab" Header="Application Details">
                 <Grid Margin="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="272"/>
@@ -78,7 +78,7 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="PE Section">
+            <TabItem x:Name="PeTab" Header="PE Section">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="16,4,16,16">
                         <TextBlock x:Name="PeMessage" Foreground="Gray" TextWrapping="Wrap"/>

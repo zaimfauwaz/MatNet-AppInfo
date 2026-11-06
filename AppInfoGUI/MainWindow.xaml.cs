@@ -23,6 +23,7 @@ namespace AppInfoGUI
             }
 
             string path = args[1];
+            ApplyFileType(path);
 
             // Independent of each other, so a slow signature check never delays the details
             Task details = LoadDetailsAsync(path);
