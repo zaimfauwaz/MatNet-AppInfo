@@ -12,21 +12,27 @@ namespace AppInfoGUI
             DetailsTab.Header = extension switch
             {
                 ".msi" or ".msp" => "Installer Details",
-                ".dll" => "Library Information",
+                ".dll" or ".rll" => "Library Information",
                 ".sys" or ".ocx" => "Driver Details",
                 _ => "Application Details"   // .exe and anything else
             };
 
             // Installer packages are not PE files, so the PE tab would be empty
             _isInstaller = extension is ".msi" or ".msp";
+            _isLibrary = extension is ".dll" or ".rll";
+            _isDriver = extension is ".sys" or ".ocx";
             PeTab.Visibility = VisibleIf(!_isInstaller);
 
             // Installers have their own sections instead of the file version ones
             VersionSection.Visibility = VisibleIf(!_isInstaller);
             InstallerSection.Visibility = VisibleIf(_isInstaller);
+            LibrarySection.Visibility = VisibleIf(_isLibrary);
+            DriverSection.Visibility = VisibleIf(_isDriver);
         }
 
         bool _isInstaller;
+        bool _isLibrary;
+        bool _isDriver;
 
         static System.Windows.Visibility VisibleIf(bool visible) =>
             visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;

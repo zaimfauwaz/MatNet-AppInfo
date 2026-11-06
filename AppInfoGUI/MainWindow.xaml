@@ -69,6 +69,16 @@
                                 <ItemsControl x:Name="VersionList" ItemTemplate="{StaticResource RowTemplate}"/>
                             </StackPanel>
 
+                            <StackPanel x:Name="LibrarySection" Visibility="Collapsed">
+                                <TextBlock Text="Library" Style="{StaticResource SectionHeader}"/>
+                                <ItemsControl x:Name="LibraryList" ItemTemplate="{StaticResource RowTemplate}"/>
+                            </StackPanel>
+
+                            <StackPanel x:Name="DriverSection" Visibility="Collapsed">
+                                <TextBlock x:Name="DriverTitle" Style="{StaticResource SectionHeader}"/>
+                                <ItemsControl x:Name="DriverList" ItemTemplate="{StaticResource RowTemplate}"/>
+                            </StackPanel>
+
                             <TextBlock Text="Origin and location" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="OriginList" ItemTemplate="{StaticResource RowTemplate}"/>
 

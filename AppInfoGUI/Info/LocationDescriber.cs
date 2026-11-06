@@ -32,7 +32,7 @@ internal static class LocationDescriber
     }
 
     // True if the folder is the parent itself or anywhere below it
-    static bool IsInside(string folder, string parent)
+    internal static bool IsInside(string folder, string parent)
     {
         parent = parent.TrimEnd('\\');
         if (parent == "") return false;
