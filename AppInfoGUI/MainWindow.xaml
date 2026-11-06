@@ -111,6 +111,13 @@
 
                         <TextBlock Text=".NET" Style="{StaticResource SectionHeader}"/>
                         <ItemsControl x:Name="PeDotNetList" ItemTemplate="{StaticResource RowTemplate}"/>
+
+                        <StackPanel x:Name="PeHashSection" Visibility="Collapsed">
+                            <TextBlock Text="Authenticode hash" Style="{StaticResource SectionHeader}"/>
+                            <ItemsControl x:Name="PeHashList" ItemTemplate="{StaticResource RowTemplate}"/>
+                            <TextBlock Text="The hash a digital signature signs. It leaves out the signature itself, so it stays the same whether the file is signed or not. Signature checking is on the Digital Signatures tab."
+                                       FontSize="11" Foreground="Gray" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

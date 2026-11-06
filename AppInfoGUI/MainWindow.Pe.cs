@@ -1,3 +1,4 @@
+using AppInfoGUI.Hashes;
 using AppInfoGUI.PE;
 using System.IO;
 
@@ -18,6 +19,13 @@ namespace AppInfoGUI
             {
                 PeInfo info = await Task.Run(() => PeDetails.Read(path));
                 ShowPe(info);
+
+                // Shown after the rest, because it has to read the whole file
+                if (info.Message == "")
+                {
+                    PeHashList.ItemsSource = await Task.Run(() => AuthenticodeHash.Read(path));
+                    PeHashSection.Visibility = System.Windows.Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
