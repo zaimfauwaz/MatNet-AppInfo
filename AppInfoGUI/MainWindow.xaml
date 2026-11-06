@@ -7,6 +7,25 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="MainWindow" Height="620" Width="900" Loaded="Window_Loaded">
+    <Window.Resources>
+                                <DataTemplate x:Key="RowTemplate">
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Label}" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,8,0"/>
+                                        <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}"
+                                                 IsReadOnly="True" BorderThickness="0"
+                                                 Background="Transparent" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </DataTemplate>
+                                <Style x:Key="SectionHeader" TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Margin" Value="0,12,0,8"/>
+                                </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -41,36 +60,12 @@
                     <!-- Right: detail sections -->
                     <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <StackPanel.Resources>
-                                <DataTemplate x:Key="RowTemplate">
-                                    <Grid Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Label}" Foreground="Gray"/>
-                                        <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}"
-                                                 IsReadOnly="True" BorderThickness="0"
-                                                 Background="Transparent" TextWrapping="Wrap"/>
-                                    </Grid>
-                                </DataTemplate>
-                                <Style x:Key="SectionHeader" TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="14"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="Margin" Value="0,12,0,8"/>
-                                </Style>
-                            </StackPanel.Resources>
 
                             <TextBlock Text="File" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="FileList" ItemTemplate="{StaticResource RowTemplate}"/>
 
                             <TextBlock Text="Version information" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="VersionList" ItemTemplate="{StaticResource RowTemplate}"/>
-
-                            <StackPanel x:Name="TechSection" Visibility="Collapsed">
-                                <TextBlock Text="Technical details" Style="{StaticResource SectionHeader}"/>
-                                <ItemsControl x:Name="TechList" ItemTemplate="{StaticResource RowTemplate}"/>
-                            </StackPanel>
 
                             <TextBlock Text="Origin and location" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="OriginList" ItemTemplate="{StaticResource RowTemplate}"/>
@@ -82,6 +77,25 @@
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
+            </TabItem>
+            <TabItem Header="PE Section">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="16,4,16,16">
+                        <TextBlock x:Name="PeMessage" Foreground="Gray" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Header" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeHeaderList" ItemTemplate="{StaticResource RowTemplate}"/>
+
+                        <TextBlock Text="Security flags" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeSecurityList" ItemTemplate="{StaticResource RowTemplate}"/>
+
+                        <TextBlock Text="Sections" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeSectionList" ItemTemplate="{StaticResource RowTemplate}"/>
+
+                        <TextBlock Text=".NET" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeDotNetList" ItemTemplate="{StaticResource RowTemplate}"/>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Product Information (AI)">
                 <Grid Background="#FFE5E5E5"/>

@@ -27,7 +27,8 @@ namespace AppInfoGUI
             // Independent of each other, so a slow signature check never delays the details
             Task details = LoadDetailsAsync(path);
             Task signature = LoadSignatureAsync(path);
-            await Task.WhenAll(details, signature);
+            Task pe = LoadPeAsync(path);
+            await Task.WhenAll(details, signature, pe);
         }
 
         async Task LoadSignatureAsync(string path)
