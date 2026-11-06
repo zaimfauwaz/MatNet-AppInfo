@@ -29,7 +29,8 @@ namespace AppInfoGUI
             Task details = LoadDetailsAsync(path);
             Task signature = LoadSignatureAsync(path);
             Task pe = LoadPeAsync(path);
-            await Task.WhenAll(details, signature, pe);
+            Task installer = LoadInstallerAsync(path);
+            await Task.WhenAll(details, signature, pe, installer);
         }
 
         async Task LoadSignatureAsync(string path)

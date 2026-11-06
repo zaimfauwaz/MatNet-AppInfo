@@ -18,8 +18,17 @@ namespace AppInfoGUI
             };
 
             // Installer packages are not PE files, so the PE tab would be empty
-            bool isInstaller = extension is ".msi" or ".msp";
-            PeTab.Visibility = isInstaller ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+            _isInstaller = extension is ".msi" or ".msp";
+            PeTab.Visibility = VisibleIf(!_isInstaller);
+
+            // Installers have their own sections instead of the file version ones
+            VersionSection.Visibility = VisibleIf(!_isInstaller);
+            InstallerSection.Visibility = VisibleIf(_isInstaller);
         }
+
+        bool _isInstaller;
+
+        static System.Windows.Visibility VisibleIf(bool visible) =>
+            visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     }
 }

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace AppInfoGUI.Info;
 
-public record IconImage(ImageSource Image, int Width, int Height, int SizeCount);
+public record IconImage(ImageSource Image, string Description);
 
 public static class IconReader
 {
@@ -122,6 +122,7 @@ public static class IconReader
         if (best == null) return null;
 
         best.Freeze();   // needed to hand the image to the window from a background thread
-        return new IconImage(best, best.PixelWidth, best.PixelHeight, decoder.Frames.Count);
+        return new IconImage(best,
+            $"Largest icon in file: {best.PixelWidth} x {best.PixelHeight} px (of {decoder.Frames.Count} sizes)");
     }
 }

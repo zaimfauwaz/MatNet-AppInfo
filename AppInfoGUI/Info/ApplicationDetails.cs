@@ -33,12 +33,13 @@ public static class ApplicationDetails
         }
     }
 
-    // No icon, or an unreadable one, just means the placeholder is shown
+    // The file's own icon first, then the Windows default for its type.
+    // No icon at all just means the empty box is shown.
     static IconImage? ReadIcon(string path)
     {
         try
         {
-            return IconReader.Read(path);
+            return IconReader.Read(path) ?? DefaultIcon.Read(path);
         }
         catch (Exception)
         {

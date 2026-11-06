@@ -64,15 +64,22 @@
                             <TextBlock Text="File" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="FileList" ItemTemplate="{StaticResource RowTemplate}"/>
 
-                            <TextBlock Text="Version information" Style="{StaticResource SectionHeader}"/>
-                            <ItemsControl x:Name="VersionList" ItemTemplate="{StaticResource RowTemplate}"/>
+                            <StackPanel x:Name="VersionSection">
+                                <TextBlock Text="Version information" Style="{StaticResource SectionHeader}"/>
+                                <ItemsControl x:Name="VersionList" ItemTemplate="{StaticResource RowTemplate}"/>
+                            </StackPanel>
 
                             <TextBlock Text="Origin and location" Style="{StaticResource SectionHeader}"/>
                             <ItemsControl x:Name="OriginList" ItemTemplate="{StaticResource RowTemplate}"/>
 
                             <StackPanel x:Name="InstallerSection" Visibility="Collapsed">
-                                <TextBlock Text="Installer package" Style="{StaticResource SectionHeader}"/>
-                                <ItemsControl x:Name="InstallerList" ItemTemplate="{StaticResource RowTemplate}"/>
+                                <StackPanel x:Name="ProductSection">
+                                    <TextBlock Text="Product" Style="{StaticResource SectionHeader}"/>
+                                    <ItemsControl x:Name="ProductList" ItemTemplate="{StaticResource RowTemplate}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Package" Style="{StaticResource SectionHeader}"/>
+                                <ItemsControl x:Name="PackageList" ItemTemplate="{StaticResource RowTemplate}"/>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>

@@ -27,14 +27,16 @@ namespace AppInfoGUI
 
         void ShowDetails(ApplicationInfo info)
         {
-            TitleText.Text = info.Title;
-            ProductText.Text = info.Product;
-            CompanyText.Text = info.Company;
+            // For installers the names come from the package instead (MainWindow.Installer.cs)
+            if (!_isInstaller)
+            {
+                TitleText.Text = info.Title;
+                ProductText.Text = info.Product;
+                CompanyText.Text = info.Company;
+            }
 
             AppIcon.Source = info.Icon?.Image;
-            IconInfoText.Text = info.Icon == null
-                ? "No icon in this file"
-                : $"Largest icon in file: {info.Icon.Width} x {info.Icon.Height} px (of {info.Icon.SizeCount} sizes)";
+            IconInfoText.Text = info.Icon?.Description ?? "No icon available";
 
             FileList.ItemsSource = info.FileRows;
             VersionList.ItemsSource = info.VersionRows;
