@@ -1,4 +1,5 @@
 ﻿using AppInfoGUI.Info;
+using AppInfoGUI.Startup;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -14,6 +15,9 @@ namespace AppInfoGUI
 
         async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Elevation.IsElevated)
+                Title += " (administrator)";
+
             string[] args = Environment.GetCommandLineArgs();
 
             if (args.Length < 2)

@@ -86,18 +86,18 @@ public static class SummaryBuilder
     static void AddRights(List<Finding> findings, SummaryInputs input)
     {
         if (input.RequestedLevel == "requireAdministrator")
-            findings.Add(new(FindingLevel.Review, "Asks for administrator rights"));
+            findings.Add(new(FindingLevel.Review, "This program asks for administrator rights every time it starts"));
         else if (input.RequestedLevel == "highestAvailable")
-            findings.Add(new(FindingLevel.Review, "Asks for the highest rights available (administrator if you are one)"));
+            findings.Add(new(FindingLevel.Review, "This program asks for the highest rights available when it starts (administrator, if you are one)"));
 
         if (input.AutostartHits > 0)
-            findings.Add(new(FindingLevel.Review, "Set to start by itself or run as a service"));
+            findings.Add(new(FindingLevel.Review, "This program is set to start by itself or run as a service"));
     }
 
     static void AddPlace(List<Finding> findings, SummaryInputs input)
     {
         if (input.InTempFolder)
-            findings.Add(new(FindingLevel.Review, "Located in a temporary folder"));
+            findings.Add(new(FindingLevel.Review, "This file is in a temporary folder"));
     }
 
     static void AddInstaller(List<Finding> findings, SummaryInputs input)
@@ -105,7 +105,7 @@ public static class SummaryBuilder
         if (input.SystemActions > 0)
         {
             string what = input.SystemActions == 1 ? "1 program or script" : $"{input.SystemActions} programs or scripts";
-            findings.Add(new(FindingLevel.Review, $"Installer runs {what} as the system"));
+            findings.Add(new(FindingLevel.Review, $"This installer runs {what} with full system rights"));
         }
     }
 
@@ -114,6 +114,6 @@ public static class SummaryBuilder
         if (input.DriverCheck == DriverCheckOutcome.Match)
             findings.Add(new(FindingLevel.Danger, "Known vulnerable driver"));
         else if (input.DriverCheck == DriverCheckOutcome.NotChecked)
-            findings.Add(new(FindingLevel.Unknown, "Could not check against the vulnerable-driver list"));
+            findings.Add(new(FindingLevel.Unknown, "Could not check this driver against the vulnerable-driver list"));
     }
 }
