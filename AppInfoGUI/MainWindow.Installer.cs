@@ -1,5 +1,4 @@
 using AppInfoGUI.Installer;
-using System.IO;
 
 namespace AppInfoGUI
 {
@@ -8,7 +7,7 @@ namespace AppInfoGUI
     {
         async Task LoadInstallerAsync(string path)
         {
-            if (!_isInstaller || !File.Exists(path))
+            if (!_kind.IsInstaller)
                 return;
 
             try
@@ -31,9 +30,7 @@ namespace AppInfoGUI
             ProductList.ItemsSource = info.ProductRows;
             PackageList.ItemsSource = info.PackageRows;
 
-            ProductSection.Visibility = info.ProductRows.Count > 0
-                ? System.Windows.Visibility.Visible
-                : System.Windows.Visibility.Collapsed;
+            ProductSection.Visibility = VisibleIf(info.ProductRows.Count > 0);
         }
     }
 }

@@ -1,14 +1,13 @@
 using AppInfoGUI.Library;
-using System.IO;
 
 namespace AppInfoGUI
 {
-    // The extra section for .dll files
+    // The extra section for .dll and .rll files
     public partial class MainWindow
     {
         async Task LoadLibraryAsync(string path)
         {
-            if (!_isLibrary || !File.Exists(path))
+            if (!_kind.IsLibrary)
                 return;
 
             try
@@ -17,7 +16,7 @@ namespace AppInfoGUI
             }
             catch (Exception)
             {
-                LibrarySection.Visibility = System.Windows.Visibility.Collapsed;
+                LibrarySection.Visibility = VisibleIf(false);
             }
         }
     }

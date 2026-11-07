@@ -6,32 +6,38 @@
         xmlns:local="clr-namespace:AppInfoGUI"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="MainWindow" Height="620" Width="900" MinHeight="560" MinWidth="800" Loaded="Window_Loaded">
+        Title="MatNet AppInfo" Height="620" Width="900" MinHeight="560" MinWidth="800" Loaded="Window_Loaded">
     <Window.Resources>
-                                <DataTemplate x:Key="RowTemplate">
-                                    <Grid Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Label}" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,8,0"/>
-                                        <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}"
-                                                 IsReadOnly="True" BorderThickness="0"
-                                                 Background="Transparent" TextWrapping="Wrap"/>
-                                    </Grid>
-                                </DataTemplate>
-                                <Style x:Key="SectionHeader" TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="14"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="Margin" Value="0,12,0,8"/>
-                                </Style>
+        <!-- One row of "label: value", used by every tab that lists details -->
+        <DataTemplate x:Key="RowTemplate">
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Label}" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,8,0"/>
+                <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}"
+                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Window}}"
+                         IsReadOnly="True" BorderThickness="0"
+                         Background="Transparent" TextWrapping="Wrap"/>
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,12,0,8"/>
+        </Style>
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <TabControl Grid.ColumnSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- The file being checked, shown above every tab -->
+        <TextBox x:Name="FilePathBox" IsReadOnly="True" Padding="4" Margin="8,8,8,0"/>
+
+        <TabControl Grid.Row="1" Margin="0,8,0,0">
             <TabItem x:Name="DetailsTab" Header="Application Details">
                 <Grid Margin="16">
                     <Grid.ColumnDefinitions>
@@ -259,102 +265,19 @@
                 <Grid Margin="16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- File path + Browse -->
-                    <Grid Grid.Row="0" Margin="0,0,0,12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="FilePathBox" IsReadOnly="True" Padding="4"/>
-                    </Grid>
-
-                    <!-- Verdict banner -->
-                    <Border x:Name="VerdictBanner" Grid.Row="1" Background="LightGray"
-                CornerRadius="4" Padding="12" Margin="0,0,0,16">
+                    <!-- Verdict from Windows -->
+                    <Border x:Name="VerdictBanner" Background="LightGray"
+                            CornerRadius="4" Padding="12" Margin="0,0,0,16">
                         <TextBlock x:Name="VerdictText" Text="No file selected" Foreground="Black"
-                       FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                   FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
                     </Border>
 
                     <!-- Signer details -->
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                        <Grid>
-                            <Grid.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="Gray"/>
-                                    <Setter Property="Margin" Value="0,0,0,10"/>
-                                </Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="IsReadOnly" Value="True"/>
-                                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                    <Setter Property="Margin" Value="0,0,0,10"/>
-                                </Style>
-                            </Grid.Resources>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="140"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0" Text="Signature type"/>
-                            <TextBox x:Name="TypeBox" Grid.Row="0" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="1" Text="Catalog file"/>
-                            <TextBox x:Name="CatalogBox" Grid.Row="1" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="2" Text="Publisher"/>
-                            <TextBox x:Name="PublisherBox" Grid.Row="2" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="3" Text="Subject"/>
-                            <TextBox x:Name="SubjectBox" Grid.Row="3" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="4" Text="Issuer"/>
-                            <TextBox x:Name="IssuerBox" Grid.Row="4" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="5" Text="Chain"/>
-                            <TextBox x:Name="ChainBox" Grid.Row="5" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="6" Text="Thumbprint"/>
-                            <TextBox x:Name="ThumbprintBox" Grid.Row="6" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="7" Text="Serial number"/>
-                            <TextBox x:Name="SerialBox" Grid.Row="7" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="8" Text="Algorithm"/>
-                            <TextBox x:Name="AlgorithmBox" Grid.Row="8" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="9" Text="Valid from"/>
-                            <TextBox x:Name="ValidFromBox" Grid.Row="9" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="10" Text="Valid to"/>
-                            <TextBox x:Name="ValidToBox" Grid.Row="10" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="11" Text="Expiry"/>
-                            <TextBox x:Name="ExpiryBox" Grid.Row="11" Grid.Column="1"/>
-
-                            <TextBlock Grid.Row="12" Text="Extended Validation"/>
-                            <TextBox x:Name="ValidationBox" Grid.Row="12" Grid.Column="1"/>
-                        </Grid>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="SignatureList" ItemTemplate="{StaticResource RowTemplate}"/>
                     </ScrollViewer>
                 </Grid>
             </TabItem>

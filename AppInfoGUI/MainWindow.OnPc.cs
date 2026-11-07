@@ -1,5 +1,4 @@
 using AppInfoGUI.OnThisPc;
-using System.IO;
 using System.Windows;
 
 namespace AppInfoGUI
@@ -9,14 +8,8 @@ namespace AppInfoGUI
     {
         async Task LoadOnPcAsync(string path)
         {
-            if (_isInstaller)
+            if (_kind.IsInstaller)
                 return;
-
-            if (!File.Exists(path))
-            {
-                OnPcMessage.Text = "File not found";
-                return;
-            }
 
             OnPcMessage.Text = "Checking...";
 

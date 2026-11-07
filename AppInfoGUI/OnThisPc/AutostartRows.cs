@@ -70,7 +70,7 @@ internal static class AutostartRows
                 using RegistryKey? service = services.OpenSubKey(name);
                 if (!PathMatch.Mentions(service?.GetValue("ImagePath") as string, path)) continue;
 
-                string start = service!.GetValue("Start") is int s ? StartName(s) : "start type not available";
+                string start = service!.GetValue("Start") is int s ? ServiceStartType.Describe(s) : "start type not available";
                 rows.Add(new($"Service: {name}", start));
             }
             catch (Exception)
@@ -79,14 +79,4 @@ internal static class AutostartRows
             }
         }
     }
-
-    static string StartName(int start) => start switch
-    {
-        0 => "Starts at boot",
-        1 => "Starts with the system",
-        2 => "Starts automatically",
-        3 => "Starts on demand",
-        4 => "Disabled",
-        _ => "Start type " + start
-    };
 }

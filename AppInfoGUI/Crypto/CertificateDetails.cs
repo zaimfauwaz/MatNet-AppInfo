@@ -1,4 +1,5 @@
-﻿using System.Formats.Asn1;
+﻿using AppInfoGUI.Info;
+using System.Formats.Asn1;
 using System.Security.Cryptography.X509Certificates;
 
 namespace AppInfoGUI.Crypto;
@@ -10,30 +11,17 @@ public static class CertificateDetails
 
     public static void Fill(SignatureResult result, X509Certificate2 cert)
     {
-        result.Publisher = Read(() => cert.GetNameInfo(X509NameType.SimpleName, false));
-        result.Subject = Read(() => cert.Subject);
-        result.Issuer = Read(() => cert.GetNameInfo(X509NameType.SimpleName, true));
-        result.Chain = Read(() => BuildChainText(cert));
-        result.Thumbprint = Read(() => cert.Thumbprint);
-        result.SerialNumber = Read(() => cert.SerialNumber);
-        result.Algorithm = Read(() => cert.SignatureAlgorithm.FriendlyName ?? cert.SignatureAlgorithm.Value);
-        result.ValidFrom = Read(() => cert.NotBefore.ToString("yyyy-MM-dd"));
-        result.ValidTo = Read(() => cert.NotAfter.ToString("yyyy-MM-dd"));
-        result.Expiry = Read(() => DescribeExpiry(cert));
-        result.Validation = Read(() => DescribeValidation(cert));
-    }
-
-    static string Read(Func<string?> lookup)
-    {
-        try
-        {
-            string? value = lookup();
-            return string.IsNullOrWhiteSpace(value) ? "Not available" : value;
-        }
-        catch (Exception)
-        {
-            return "Not available";
-        }
+        result.Publisher = Safe.Text(() => cert.GetNameInfo(X509NameType.SimpleName, false));
+        result.Subject = Safe.Text(() => cert.Subject);
+        result.Issuer = Safe.Text(() => cert.GetNameInfo(X509NameType.SimpleName, true));
+        result.Chain = Safe.Text(() => BuildChainText(cert));
+        result.Thumbprint = Safe.Text(() => cert.Thumbprint);
+        result.SerialNumber = Safe.Text(() => cert.SerialNumber);
+        result.Algorithm = Safe.Text(() => cert.SignatureAlgorithm.FriendlyName ?? cert.SignatureAlgorithm.Value);
+        result.ValidFrom = Safe.Text(() => cert.NotBefore.ToString("yyyy-MM-dd"));
+        result.ValidTo = Safe.Text(() => cert.NotAfter.ToString("yyyy-MM-dd"));
+        result.Expiry = Safe.Text(() => DescribeExpiry(cert));
+        result.Validation = Safe.Text(() => DescribeValidation(cert));
     }
 
     static string DescribeExpiry(X509Certificate2 cert)

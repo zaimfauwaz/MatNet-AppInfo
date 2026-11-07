@@ -62,6 +62,10 @@ public static class AuthenticodeHash
         }
     }
 
+    // Just the SHA-256, for code that compares it with a list. Empty when it cannot be calculated.
+    public static string Sha256(string path) =>
+        Read(path).FirstOrDefault(row => row.Label == "Authenticode SHA-256")?.Value ?? "";
+
     // Feeds the bytes from start up to (not including) end into every hash
     static void Append(Stream stream, long start, long end, IncrementalHash[] hashes)
     {

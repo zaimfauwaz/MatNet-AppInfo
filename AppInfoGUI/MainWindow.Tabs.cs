@@ -1,42 +1,29 @@
-using System.IO;
+using AppInfoGUI.Info;
 
 namespace AppInfoGUI
 {
-    // Which tabs are shown depends on the file type
+    // Which tabs and sections are shown depends on the file type
     public partial class MainWindow
     {
-        void ApplyFileType(string path)
+        string _filePath = "";                // the file this window was opened for
+        FileKind _kind = new FileKind("");    // what kind of file it is
+
+        void ApplyFileType()
         {
-            string extension = Path.GetExtension(path).ToLowerInvariant();
+            DetailsTab.Header = _kind.DetailsTabTitle;
 
-            DetailsTab.Header = extension switch
-            {
-                ".msi" or ".msp" => "Installer Details",
-                ".dll" or ".rll" => "Library Information",
-                ".sys" or ".ocx" => "Driver Details",
-                _ => "Application Details"   // .exe and anything else
-            };
-
-            // Installer packages are not PE files, so the PE tab would be empty
-            _isInstaller = extension is ".msi" or ".msp";
-            _isLibrary = extension is ".dll" or ".rll";
-            _isDriver = extension is ".sys" or ".ocx";
-            PeTab.Visibility = VisibleIf(!_isInstaller);
-            DependenciesTab.Visibility = VisibleIf(!_isInstaller);
-            OnPcTab.Visibility = VisibleIf(!_isInstaller);
-            InstallsTab.Visibility = VisibleIf(extension == ".msi");
+            // Installer packages are not PE files, so these tabs would be empty
+            PeTab.Visibility = VisibleIf(!_kind.IsInstaller);
+            DependenciesTab.Visibility = VisibleIf(!_kind.IsInstaller);
+            OnPcTab.Visibility = VisibleIf(!_kind.IsInstaller);
+            InstallsTab.Visibility = VisibleIf(_kind.IsMsi);
 
             // Installers have their own sections instead of the file version ones
-            VersionSection.Visibility = VisibleIf(!_isInstaller);
-            InstallerSection.Visibility = VisibleIf(_isInstaller);
-            LibrarySection.Visibility = VisibleIf(_isLibrary);
-            DriverSection.Visibility = VisibleIf(_isDriver);
+            VersionSection.Visibility = VisibleIf(!_kind.IsInstaller);
+            InstallerSection.Visibility = VisibleIf(_kind.IsInstaller);
+            LibrarySection.Visibility = VisibleIf(_kind.IsLibrary);
+            DriverSection.Visibility = VisibleIf(_kind.IsDriver);
         }
-
-        string _filePath = "";   // the file this window was opened for
-        bool _isInstaller;
-        bool _isLibrary;
-        bool _isDriver;
 
         static System.Windows.Visibility VisibleIf(bool visible) =>
             visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;

@@ -1,5 +1,4 @@
 using AppInfoGUI.Driver;
-using System.IO;
 
 namespace AppInfoGUI
 {
@@ -8,7 +7,7 @@ namespace AppInfoGUI
     {
         async Task LoadDriverAsync(string path)
         {
-            if (!_isDriver || !File.Exists(path))
+            if (!_kind.IsDriver)
                 return;
 
             try
@@ -19,7 +18,7 @@ namespace AppInfoGUI
             }
             catch (Exception)
             {
-                DriverSection.Visibility = System.Windows.Visibility.Collapsed;
+                DriverSection.Visibility = VisibleIf(false);
             }
         }
     }

@@ -1,5 +1,4 @@
 using AppInfoGUI.Dependencies;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,14 +9,8 @@ namespace AppInfoGUI
     {
         async Task LoadDependenciesAsync(string path)
         {
-            if (_isInstaller)
+            if (_kind.IsInstaller)
                 return;
-
-            if (!File.Exists(path))
-            {
-                DependencyMessage.Text = "File not found";
-                return;
-            }
 
             try
             {

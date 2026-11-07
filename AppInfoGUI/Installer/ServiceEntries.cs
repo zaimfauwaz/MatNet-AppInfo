@@ -1,3 +1,5 @@
+using AppInfoGUI.Info;
+
 namespace AppInfoGUI.Installer;
 
 internal static class ServiceEntries
@@ -11,17 +13,7 @@ internal static class ServiceEntries
             string display = row[1] == "" ? row[0] : row[1];
             string account = row[3] == "" ? "LocalSystem (full control of the PC)" : row[3];
 
-            yield return new ServiceEntry(row[0], display, StartName(row[2]), account);
+            yield return new ServiceEntry(row[0], display, ServiceStartType.Describe(row[2]), account);
         }
     }
-
-    static string StartName(string start) => start switch
-    {
-        "0" => "Boot",
-        "1" => "System",
-        "2" => "Automatic",
-        "3" => "On demand",
-        "4" => "Disabled",
-        _ => start
-    };
 }

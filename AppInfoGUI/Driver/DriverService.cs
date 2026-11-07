@@ -1,3 +1,4 @@
+using AppInfoGUI.Info;
 using System.IO;
 using Microsoft.Win32;
 
@@ -43,7 +44,7 @@ internal static class DriverServiceFinder
         string display = key.GetValue("DisplayName") as string ?? "";
         if (display == "" || display.StartsWith('@')) display = name;
 
-        string start = key.GetValue("Start") is int s ? StartName(s) : "Not available";
+        string start = key.GetValue("Start") is int s ? ServiceStartType.Describe(s) : "Not available";
         return new DriverService(name, display, start, TypeName(type));
     }
 
@@ -62,16 +63,6 @@ internal static class DriverServiceFinder
 
         return Path.GetFullPath(path);
     }
-
-    static string StartName(int start) => start switch
-    {
-        0 => "Boot (loads first, with Windows)",
-        1 => "System (loads with Windows)",
-        2 => "Automatic",
-        3 => "On demand (only when needed)",
-        4 => "Disabled",
-        _ => $"Unknown ({start})"
-    };
 
     static string TypeName(int type) => (type & 0x0F) switch
     {

@@ -1,19 +1,12 @@
 using AppInfoGUI.Info;
-using System.IO;
 
 namespace AppInfoGUI
 {
-    // The Application Details tab. The signature tab lives in MainWindow.xaml.cs.
+    // The Application Details tab. The signature tab lives in MainWindow.Signature.cs.
     public partial class MainWindow
     {
         async Task LoadDetailsAsync(string path)
         {
-            if (!File.Exists(path))
-            {
-                TitleText.Text = "File not found";
-                return;
-            }
-
             try
             {
                 ApplicationInfo info = await Task.Run(() => ApplicationDetails.Read(path));
@@ -28,7 +21,7 @@ namespace AppInfoGUI
         void ShowDetails(ApplicationInfo info)
         {
             // For installers the names come from the package instead (MainWindow.Installer.cs)
-            if (!_isInstaller)
+            if (!_kind.IsInstaller)
             {
                 TitleText.Text = info.Title;
                 ProductText.Text = info.Product;

@@ -1,6 +1,5 @@
 using AppInfoGUI.Hashes;
 using AppInfoGUI.PE;
-using System.IO;
 
 namespace AppInfoGUI
 {
@@ -9,12 +8,6 @@ namespace AppInfoGUI
     {
         async Task LoadPeAsync(string path)
         {
-            if (!File.Exists(path))
-            {
-                PeMessage.Text = "File not found";
-                return;
-            }
-
             try
             {
                 PeInfo info = await Task.Run(() => PeDetails.Read(path));
@@ -24,7 +17,7 @@ namespace AppInfoGUI
                 if (info.Message == "")
                 {
                     PeHashList.ItemsSource = await Task.Run(() => AuthenticodeHash.Read(path));
-                    PeHashSection.Visibility = System.Windows.Visibility.Visible;
+                    PeHashSection.Visibility = VisibleIf(true);
                 }
             }
             catch (Exception ex)

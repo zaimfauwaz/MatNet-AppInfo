@@ -1,14 +1,13 @@
 using AppInfoGUI.Installer;
-using System.IO;
 
 namespace AppInfoGUI
 {
-    // The "What it installs" tab (.msi only)
+    // The Installer Contents tab (.msi only)
     public partial class MainWindow
     {
         async Task LoadContentsAsync(string path)
         {
-            if (!path.EndsWith(".msi", StringComparison.OrdinalIgnoreCase) || !File.Exists(path))
+            if (!_kind.IsMsi)
                 return;
 
             ContentsMessage.Text = "Reading the package...";

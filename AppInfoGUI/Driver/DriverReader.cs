@@ -51,6 +51,7 @@ public static class DriverReader
             rows.Add(new("Starts", service.StartType));
         }
 
+        rows.Add(new("Known vulnerable driver", VulnerableDriverCheck.Describe(path)));
         rows.Add(new("In a standard driver folder", Safe.Text(() => StandardFolder(path))));
         rows.Add(new("Standard driver model (WDM)", Safe.Text(() => Wdm(path))));
     }

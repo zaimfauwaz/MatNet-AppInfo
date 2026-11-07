@@ -1,5 +1,4 @@
 using AppInfoGUI.Hashes;
-using System.IO;
 
 namespace AppInfoGUI
 {
@@ -8,12 +7,6 @@ namespace AppInfoGUI
     {
         async Task LoadHashesAsync(string path)
         {
-            if (!File.Exists(path))
-            {
-                HashMessage.Text = "File not found";
-                return;
-            }
-
             HashMessage.Text = "Calculating...";
             HashList.ItemsSource = await Task.Run(() => HashReader.Read(path));
             HashMessage.Text = "";
