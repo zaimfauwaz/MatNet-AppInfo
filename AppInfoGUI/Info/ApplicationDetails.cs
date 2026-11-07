@@ -101,6 +101,11 @@ public static class ApplicationDetails
     static void FillOrigin(ApplicationInfo info, string path, FileInfo file)
     {
         info.OriginRows.Add(new("Mark of the Web", Safe.Text(() => OriginReader.MarkOfTheWeb(path))));
+        info.OriginRows.Add(new("Downloaded from", Safe.Text(() => OriginReader.DownloadedFrom(path))));
+        info.OriginRows.Add(new("Download link", Safe.Text(() => OriginReader.DownloadLink(path))));
+        info.OriginRows.Add(new("Hidden data streams", Safe.Text(() => HiddenStreams.Describe(path))));
+        info.OriginRows.Add(new("File attributes", Safe.Text(() => FileFlags.Attributes(path))));
+        info.OriginRows.Add(new("Timestamps", Safe.Text(() => FileFlags.Timestamps(file))));
         info.OriginRows.Add(new("Location type", Safe.Text(() => LocationDescriber.Describe(file.DirectoryName ?? ""))));
     }
 }
