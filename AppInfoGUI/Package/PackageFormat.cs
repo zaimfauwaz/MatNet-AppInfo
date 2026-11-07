@@ -23,7 +23,4 @@ public class PackageFormat
     public static readonly PackageFormat Nsis = new("NSIS installer", new NsisLister());
     public static readonly PackageFormat InnoSetup = new("Inno Setup installer", new InnoLister());
     public static readonly PackageFormat WixBurn = new("WiX installer bundle", new WixLister());
-    public static readonly PackageFormat InstallShield = new("InstallShield installer");
-    public static readonly PackageFormat PyInstaller = new("Python program packed with PyInstaller");
-    public static readonly PackageFormat UnknownData = new("Program with extra data attached (format not recognised)");
 }

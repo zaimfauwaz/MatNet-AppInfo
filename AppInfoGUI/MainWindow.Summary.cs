@@ -1,4 +1,5 @@
-using AppInfoGUI.Summary;
+﻿using AppInfoGUI.Summary;
+using System.IO;
 using System.Windows.Media;
 
 namespace AppInfoGUI
@@ -18,6 +19,8 @@ namespace AppInfoGUI
                 _summary.Downloaded = facts.Downloaded;
                 _summary.RequestedLevel = facts.RequestedLevel;
                 _summary.InTempFolder = facts.InTempFolder;
+                _summary.FileName = Path.GetFileName(path);
+                _summary.OriginalName = facts.OriginalName;
                 _summary.Failures.AddRange(facts.Failures);
             }
             catch (Exception)

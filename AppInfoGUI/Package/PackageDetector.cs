@@ -1,9 +1,7 @@
 ﻿using AppInfoGUI.Package.Inno;
 using AppInfoGUI.Package.Nsis;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection.PortableExecutable;
-using System.Text;
 
 namespace AppInfoGUI.Package;
 
@@ -14,9 +12,6 @@ public record Detection(PackageFormat? Format, Overlay? Overlay);
 public static class PackageDetector
 {
     const int WindowSize = 128 * 1024;          // how much of the extra data we look through
-    const long UnknownDataLimit = 1024 * 1024;  // extra data below this size is ignored
-
-    static readonly byte[] PyInstallerMark = Encoding.ASCII.GetBytes("MEI").Concat(new byte[] { 0x0C, 0x0B, 0x0A, 0x0B, 0x0E }).ToArray();
 
     public static Detection Detect(string path)
     {
@@ -30,12 +25,7 @@ public static class PackageDetector
         // Installers with their own markers come first, so a ZIP packed inside one is not mistaken for the installer
         PackageFormat? format = FromSections(pe)
             ?? FromInnoSetup(pe, stream)
-            ?? FromStart(stream, overlay)
-            ?? FromEnd(stream, overlay)
-            ?? FromVersionInfo(path);
-
-        if (format == null && overlay != null && overlay.Length >= UnknownDataLimit)
-            format = PackageFormat.UnknownData;
+            ?? FromStart(stream, overlay);
 
         return new Detection(format, overlay);
     }
@@ -65,34 +55,9 @@ public static class PackageDetector
         return first.Count > 0 ? first[0].Format : null;
     }
 
-    // PyInstaller writes a marker at the very end of its data
-    static PackageFormat? FromEnd(Stream stream, Overlay? overlay)
-    {
-        if (overlay == null) return null;
-
-        int length = (int)Math.Min(overlay.Length, WindowSize);
-        byte[] tail = Read(stream, overlay.End - length, length);
-        return tail.AsSpan().IndexOf(PyInstallerMark) >= 0 ? PackageFormat.PyInstaller : null;
-    }
-
     // Inno Setup keeps a table in a resource that says where its setup data starts
     static PackageFormat? FromInnoSetup(PEReader pe, Stream stream) =>
         InnoOffsetTable.Find(pe, stream) != null ? PackageFormat.InnoSetup : null;
-
-    // InstallShield names itself in the version information
-    static PackageFormat? FromVersionInfo(string path)
-    {
-        try
-        {
-            FileVersionInfo info = FileVersionInfo.GetVersionInfo(path);
-            string text = $"{info.CompanyName} {info.ProductName} {info.FileDescription}";
-            return text.Contains("InstallShield", StringComparison.OrdinalIgnoreCase) ? PackageFormat.InstallShield : null;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
 
     static byte[] Read(Stream stream, long position, int length)
     {

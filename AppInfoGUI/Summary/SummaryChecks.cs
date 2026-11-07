@@ -1,5 +1,6 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using AppInfoGUI.PE;
+using System.Diagnostics;
 using System.IO;
 
 namespace AppInfoGUI.Summary;
@@ -10,6 +11,7 @@ public class FileFacts
     public bool? Downloaded { get; set; }
     public string? RequestedLevel { get; set; }
     public bool InTempFolder { get; set; }
+    public string? OriginalName { get; set; }
     public List<string> Failures { get; } = new();
 }
 
@@ -21,12 +23,19 @@ public static class SummaryChecks
 
         Try(facts, "download origin", () => facts.Downloaded = IsDownloaded(path));
         Try(facts, "file location", () => facts.InTempFolder = InTempFolder(path));
+        Try(facts, "version details", () => ReadVersion(path, facts));
 
         // Installer packages have no manifest
         if (!isInstaller)
             Try(facts, "manifest", () => facts.RequestedLevel = ManifestRows.RequestedLevel(path));
 
         return facts;
+    }
+
+    static void ReadVersion(string path, FileFacts facts)
+    {
+        FileVersionInfo version = FileVersionInfo.GetVersionInfo(path);
+        facts.OriginalName = version.OriginalFilename;
     }
 
     static void Try(FileFacts facts, string name, Action check)

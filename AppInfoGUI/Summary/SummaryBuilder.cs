@@ -1,5 +1,6 @@
-using AppInfoGUI.Crypto;
+﻿using AppInfoGUI.Crypto;
 using AppInfoGUI.Driver;
+using System.IO;
 
 namespace AppInfoGUI.Summary;
 
@@ -48,6 +49,7 @@ public static class SummaryBuilder
         AddDownload(findings, input);
         AddRights(findings, input);
         AddPlace(findings, input);
+        AddNameMismatch(findings, input);
         AddInstaller(findings, input);
         AddPackage(findings, input);
         AddDriver(findings, input);
@@ -99,6 +101,19 @@ public static class SummaryBuilder
     {
         if (input.InTempFolder)
             findings.Add(new(FindingLevel.Review, "This file is in a temporary folder"));
+    }
+
+    // Only a different file type counts. Renaming "setup.exe" to "app-1.2.exe" is normal.
+    static void AddNameMismatch(List<Finding> findings, SummaryInputs input)
+    {
+        string original = input.OriginalName?.Trim() ?? "";
+        string current = input.FileName ?? "";
+        string originalType = Path.GetExtension(original);
+        string currentType = Path.GetExtension(current);
+        if (originalType == "" || currentType == "") return;
+
+        if (!originalType.Equals(currentType, StringComparison.OrdinalIgnoreCase))
+            findings.Add(new(FindingLevel.Review, $"The file says it was built as \"{original}\", but it is now named \"{current}\""));
     }
 
     static void AddInstaller(List<Finding> findings, SummaryInputs input)

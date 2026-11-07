@@ -1,4 +1,4 @@
-using AppInfoGUI.Crypto;
+﻿using AppInfoGUI.Crypto;
 using AppInfoGUI.Driver;
 
 namespace AppInfoGUI.Summary;
@@ -13,6 +13,8 @@ public class SummaryInputs
     public bool? Downloaded { get; set; }               // marked as downloaded from the internet
     public string? RequestedLevel { get; set; }         // from the manifest, for example "requireAdministrator"
     public bool InTempFolder { get; set; }
+    public string? FileName { get; set; }               // the name the file has now
+    public string? OriginalName { get; set; }           // the name the file says it was built with
     public int AutostartHits { get; set; }              // run keys, services and tasks that start this file
     public int SystemActions { get; set; }              // installer actions that run code as the system
     public string? PackageName { get; set; }            // set when the file is an installer or self-extracting archive
