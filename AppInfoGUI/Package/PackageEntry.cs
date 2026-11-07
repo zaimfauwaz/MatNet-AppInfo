@@ -15,6 +15,7 @@ public record PackageEntry(string Path, long Size, EntryKind Kind, bool Encrypte
     {
         EntryKind.Folder => "Folder",
         EntryKind.Program => "Program or library",
+        EntryKind.Installer => "Installer package",
         EntryKind.Script => "Script or shortcut",
         EntryKind.Disguised => "Disguised as a document",
         EntryKind.Note => "",

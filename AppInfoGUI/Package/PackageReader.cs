@@ -51,10 +51,13 @@ public static class PackageReader
         info.Disguised = files.Count(e => e.Kind == EntryKind.Disguised);
         info.Encrypted = files.Count(e => e.Encrypted);
 
+        int installers = files.Count(e => e.Kind == EntryKind.Installer);
         int nested = files.Count(e => e.Depth > 0);
         info.Message = $"{info.Format.Name}. It holds {(files.Count == 1 ? "1 file" : $"{files.Count} files")}"
                      + (nested > 0 ? $" ({nested} of them inside archives)" : "")
-                     + $": {info.Programs} programs or libraries, {info.Scripts} scripts or shortcuts. "
+                     + $": {info.Programs} programs or libraries, "
+                     + (installers > 0 ? $"{installers} installer packages, " : "")
+                     + $"{info.Scripts} scripts or shortcuts. "
                      + "Nothing has been unpacked."
                      + (all.Count > MaxRows ? $" Showing the first {MaxRows}." : "");
     }

@@ -1,6 +1,7 @@
 ﻿using AppInfoGUI.Package.Archives;
 using AppInfoGUI.Package.Inno;
 using AppInfoGUI.Package.Nsis;
+using AppInfoGUI.Package.Wix;
 
 namespace AppInfoGUI.Package;
 
@@ -21,7 +22,7 @@ public class PackageFormat
     public static readonly PackageFormat Rar = new("Self-extracting RAR archive", ArchiveLister.Rar());
     public static readonly PackageFormat Nsis = new("NSIS installer", new NsisLister());
     public static readonly PackageFormat InnoSetup = new("Inno Setup installer", new InnoLister());
-    public static readonly PackageFormat WixBurn = new("WiX installer bundle");
+    public static readonly PackageFormat WixBurn = new("WiX installer bundle", new WixLister());
     public static readonly PackageFormat InstallShield = new("InstallShield installer");
     public static readonly PackageFormat PyInstaller = new("Python program packed with PyInstaller");
     public static readonly PackageFormat UnknownData = new("Program with extra data attached (format not recognised)");
