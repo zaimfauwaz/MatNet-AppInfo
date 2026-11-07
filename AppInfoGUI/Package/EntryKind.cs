@@ -1,5 +1,4 @@
-using System.IO;
-
+﻿using System.IO;
 namespace AppInfoGUI.Package;
 
 public enum EntryKind
@@ -8,7 +7,8 @@ public enum EntryKind
     Program,    // .exe, .dll and similar
     Script,     // .bat, .vbs, .ps1, shortcuts and similar
     Disguised,  // a program or script made to look like a document, such as invoice.pdf.exe
-    Other
+    Other,
+    Note        // not a file: a line that explains something, such as why an archive was not read
 }
 
 internal static class EntryClassifier

@@ -7,7 +7,7 @@ public static class NsisFileList
     const int CreateDirectory = 11;   // also what "SetOutPath" turns into
     const int ExtractFile = 20;
 
-    public static List<PackageEntry> Read(NsisHeader header)
+    public static List<NsisFile> Read(NsisHeader header)
     {
         var names = Enumerable.Range(0, header.EntryCount)
             .Where(i => header.Opcode(i) == ExtractFile)
@@ -15,7 +15,7 @@ public static class NsisFileList
 
         var strings = new NsisStrings(header, NsisStrings.LooksUnicode(header, names));
 
-        var files = new List<PackageEntry>();
+        var files = new List<NsisFile>();
         var seen = new HashSet<(string Path, int Data)>();   // a script can extract the same file in several places
         string folder = "$INSTDIR";   // where files go until the script says otherwise
 
@@ -30,14 +30,12 @@ public static class NsisFileList
             if (opcode != ExtractFile) continue;
 
             string path = Join(folder, strings.Read(header.Argument(i, 1)));
-            if (seen.Add((path, header.Argument(i, 2)))) files.Add(Entry(path));
+            int data = header.Argument(i, 2);
+            if (seen.Add((path, data))) files.Add(new NsisFile(path, data));
         }
 
         return files;
     }
-
-    // The format keeps file sizes inside the packed data, so they are left blank
-    static PackageEntry Entry(string path) => new(path, -1, EntryClassifier.Classify(path), Encrypted: false);
 
     // A name that starts with a variable or a drive is already complete
     static string Join(string folder, string name) =>

@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using System.IO;
 
 namespace AppInfoGUI.Package;
@@ -39,17 +39,21 @@ public static class PackageReader
 
     static void Fill(PackageInfo info, List<PackageEntry> all)
     {
+        List<PackageEntry> files = all.Where(e => e.Kind != EntryKind.Note).ToList();
+
         info.Listed = true;
-        info.Total = all.Count;
+        info.Total = files.Count;
         info.Entries.AddRange(all.Take(MaxRows));
 
-        info.Programs = all.Count(e => e.Kind is EntryKind.Program or EntryKind.Disguised);
-        info.Scripts = all.Count(e => e.Kind == EntryKind.Script);
-        info.Disguised = all.Count(e => e.Kind == EntryKind.Disguised);
-        info.Encrypted = all.Count(e => e.Encrypted);
+        info.Programs = files.Count(e => e.Kind is EntryKind.Program or EntryKind.Disguised);
+        info.Scripts = files.Count(e => e.Kind == EntryKind.Script);
+        info.Disguised = files.Count(e => e.Kind == EntryKind.Disguised);
+        info.Encrypted = files.Count(e => e.Encrypted);
 
-        string files = all.Count == 1 ? "1 file" : $"{all.Count} files";
-        info.Message = $"{info.Format.Name}. It holds {files}: {info.Programs} programs or libraries, {info.Scripts} scripts or shortcuts. "
+        int nested = files.Count(e => e.Depth > 0);
+        info.Message = $"{info.Format.Name}. It holds {(files.Count == 1 ? "1 file" : $"{files.Count} files")}"
+                     + (nested > 0 ? $" ({nested} of them inside archives)" : "")
+                     + $": {info.Programs} programs or libraries, {info.Scripts} scripts or shortcuts. "
                      + "Nothing has been unpacked."
                      + (all.Count > MaxRows ? $" Showing the first {MaxRows}." : "");
     }

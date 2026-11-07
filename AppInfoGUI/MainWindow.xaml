@@ -163,8 +163,8 @@
 
                     <DataGrid x:Name="PackageGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="File" Binding="{Binding Path}" Width="3*"/>
-                            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="140"/>
+                            <DataGridTextColumn Header="File" Binding="{Binding DisplayPath}" Width="3*"/>
+                            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="Auto"/>
                             <DataGridTextColumn Header="Type" Binding="{Binding TypeText}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
