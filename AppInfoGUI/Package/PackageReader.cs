@@ -9,29 +9,30 @@ public static class PackageReader
 {
     const int MaxRows = 5000;
 
-    // Null when the file is a plain program
-    public static PackageInfo? Read(string path)
+    // Quick: only looks for the markers. A null format means a plain program.
+    public static Detection Detect(string path) => PackageDetector.Detect(path);
+
+    // Slow for big installers: lists what is inside. Call it after `Detect` found a format.
+    public static PackageInfo Read(string path, Detection detection)
     {
-        Detection detection = PackageDetector.Detect(path);
-        if (detection.Format == null) return null;
+        PackageFormat format = detection.Format ?? throw new ArgumentException("the file is not a package");
+        var info = new PackageInfo { Format = format, ExtraBytes = detection.Overlay?.Length ?? 0 };
 
-        var info = new PackageInfo { Format = detection.Format, ExtraBytes = detection.Overlay?.Length ?? 0 };
-
-        if (detection.Format.Lister == null || detection.Overlay == null)
+        if (format.Lister == null || detection.Overlay == null)
         {
-            info.Message = detection.Format.Name + ". Listing the files inside is not supported for this type yet.";
+            info.Message = format.Name + ". Listing the files inside is not supported for this type yet.";
             return info;
         }
 
         try
         {
             using FileStream stream = File.OpenRead(path);
-            List<PackageEntry> all = detection.Format.Lister.List(stream, detection.Overlay);
+            List<PackageEntry> all = format.Lister.List(stream, detection.Overlay);
             Fill(info, all);
         }
         catch (Exception ex)
         {
-            info.Message = $"{detection.Format.Name}, but its files could not be listed: {ex.Message}";
+            info.Message = $"{format.Name}, but its files could not be listed: {ex.Message}";
         }
 
         return info;

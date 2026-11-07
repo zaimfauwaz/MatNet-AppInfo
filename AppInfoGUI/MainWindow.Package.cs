@@ -12,11 +12,15 @@ namespace AppInfoGUI
 
             try
             {
-                PackageInfo? info = await Task.Run(() => PackageReader.Read(path));
-                if (info == null)
+                // Finding the format is quick, so the tab appears at once. Listing a big installer can take a while.
+                Detection detection = await Task.Run(() => PackageReader.Detect(path));
+                if (detection.Format == null)
                     return;   // a plain program: the tab stays hidden
 
                 PackageTab.Visibility = VisibleIf(true);
+                PackageMessage.Text = detection.Format.Name + ". Reading the files inside, this can take a while for big installers...";
+
+                PackageInfo info = await Task.Run(() => PackageReader.Read(path, detection));
                 PackageMessage.Text = info.Message;
                 PackageGrid.ItemsSource = info.Entries;
 
