@@ -1,10 +1,11 @@
-﻿using SharpCompress.Archives;
+﻿using AppInfoGUI.Package.Streams;
+using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using System.IO;
 
-namespace AppInfoGUI.Package;
+namespace AppInfoGUI.Package.Archives;
 
 // Lists the files in a 7-Zip or RAR archive that sits behind a program (a self-extracting archive).
 // SharpCompress reads the archive's file list only. Nothing is unpacked.

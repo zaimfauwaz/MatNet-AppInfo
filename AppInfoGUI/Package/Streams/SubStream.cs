@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace AppInfoGUI.Package;
+namespace AppInfoGUI.Package.Streams;
 
 // A read-only window onto part of a file, so an archive that starts in the middle
 // of a program can be opened as if it were a file of its own.

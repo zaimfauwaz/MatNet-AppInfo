@@ -1,11 +1,12 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 
 namespace AppInfoGUI.Package;
 
 // One file inside a package
 public record PackageEntry(string Path, long Size, EntryKind Kind, bool Encrypted)
 {
-    public string SizeText => Kind == EntryKind.Folder ? "" : TextFormat.Size(Size);
+    // A size below zero means the format does not say
+    public string SizeText => Kind == EntryKind.Folder || Size < 0 ? "" : TextFormat.Size(Size);
 
     public string TypeText => (Kind switch
     {

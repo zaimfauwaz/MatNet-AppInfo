@@ -1,7 +1,7 @@
+﻿using System.IO;
 using System.Text;
-using System.IO;
 
-namespace AppInfoGUI.Package;
+namespace AppInfoGUI.Package.Archives;
 
 // Reads the list of files from a ZIP's directory at the end of the archive. Nothing is unpacked.
 // It also works when the ZIP sits behind a program, as in a self-extracting archive.

@@ -1,4 +1,5 @@
-﻿using AppInfoGUI.Info;
+﻿using AppInfoGUI.Package.Inno;
+using AppInfoGUI.Package.Nsis;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.PortableExecutable;
@@ -26,10 +27,11 @@ public static class PackageDetector
 
         Overlay? overlay = Overlay.Find(pe, stream);
 
+        // Installers with their own markers come first, so a ZIP packed inside one is not mistaken for the installer
         PackageFormat? format = FromSections(pe)
+            ?? FromInnoSetup(pe, stream)
             ?? FromStart(stream, overlay)
             ?? FromEnd(stream, overlay)
-            ?? FromInnoResource(path)
             ?? FromVersionInfo(path);
 
         if (format == null && overlay != null && overlay.Length >= UnknownDataLimit)
@@ -47,8 +49,9 @@ public static class PackageDetector
     {
         if (overlay == null) return null;
 
+        if (NsisFirstHeader.Find(stream, overlay) != null) return PackageFormat.Nsis;
+
         byte[] window = Read(stream, overlay.Start, (int)Math.Min(overlay.Length, WindowSize));
-        if (FromNsis(window, overlay.Start)) return PackageFormat.Nsis;
 
         // Whichever mark comes first is the archive
         var found = new (int Index, PackageFormat Format)[]
@@ -62,23 +65,6 @@ public static class PackageDetector
         return first.Count > 0 ? first[0].Format : null;
     }
 
-    // NSIS starts its data on a 512-byte boundary with 0xDEADBEEF followed by "NullsoftInst"
-    static bool FromNsis(byte[] window, long windowStart)
-    {
-        byte[] marker = { 0xEF, 0xBE, 0xAD, 0xDE };
-        byte[] name = Encoding.ASCII.GetBytes("NullsoftInst");
-
-        long firstBoundary = (windowStart + 511) / 512 * 512;
-        for (long at = firstBoundary; at - windowStart + 20 <= window.Length; at += 512)
-        {
-            var header = window.AsSpan((int)(at - windowStart), 20);
-            if (header.Slice(4, 4).SequenceEqual(marker) && header.Slice(8, 12).SequenceEqual(name))
-                return true;
-        }
-
-        return false;
-    }
-
     // PyInstaller writes a marker at the very end of its data
     static PackageFormat? FromEnd(Stream stream, Overlay? overlay)
     {
@@ -89,30 +75,9 @@ public static class PackageDetector
         return tail.AsSpan().IndexOf(PyInstallerMark) >= 0 ? PackageFormat.PyInstaller : null;
     }
 
-    // Inno Setup keeps its loader table in a resource numbered 11111
-    static PackageFormat? FromInnoResource(string path)
-    {
-        try
-        {
-            IntPtr module = IconNative.LoadLibraryEx(path, IntPtr.Zero, IconNative.LoadAsDataFile);
-            if (module == IntPtr.Zero) return null;
-
-            try
-            {
-                IntPtr rcData = (IntPtr)10;
-                bool found = IconNative.FindResource(module, (IntPtr)11111, rcData) != IntPtr.Zero;
-                return found ? PackageFormat.InnoSetup : null;
-            }
-            finally
-            {
-                IconNative.FreeLibrary(module);
-            }
-        }
-        catch (Exception)
-        {
-            return null;   // not on Windows, or the resources are unreadable
-        }
-    }
+    // Inno Setup keeps a table in a resource that says where its setup data starts
+    static PackageFormat? FromInnoSetup(PEReader pe, Stream stream) =>
+        InnoOffsetTable.Find(pe, stream) != null ? PackageFormat.InnoSetup : null;
 
     // InstallShield names itself in the version information
     static PackageFormat? FromVersionInfo(string path)
