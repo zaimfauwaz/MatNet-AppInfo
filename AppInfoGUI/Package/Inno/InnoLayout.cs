@@ -28,5 +28,6 @@ public record InnoLayout(string SetupId)
 
     public bool HasSigningKeys { get; init; }              // Inno Setup 6.5 and later
     public bool HasEncryptionHeader { get; init; }         // Inno Setup 6.5 and later
+    public bool WideBlockSize { get; init; }               // Inno Setup 6.7 and later store the size of a packed block in 8 bytes, not 4
     public bool NeedsUnicodeMark { get; init; }            // 6.0 and 6.1 also came as ANSI builds, which are not supported
 }

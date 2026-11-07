@@ -20,8 +20,8 @@ internal class InnoLister : IPackageLister
             ?? throw new NotSupportedException($"this version of Inno Setup is not supported yet ({id})");
 
         long firstBlock = InnoSetupData.FirstBlockStart(file, table.SetupDataStart, layout);
-        using InnoBlock entries = InnoBlock.Open(file, firstBlock);
-        using InnoBlock data = InnoBlock.Open(file, entries.End);
+        using InnoBlock entries = InnoBlock.Open(file, firstBlock, layout.WideBlockSize);
+        using InnoBlock data = InnoBlock.Open(file, entries.End, layout.WideBlockSize);
 
         return InnoFileList.Read(new InnoReader(entries.Data), new InnoReader(data.Data), layout);
     }

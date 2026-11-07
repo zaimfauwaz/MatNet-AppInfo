@@ -8,7 +8,7 @@ namespace AppInfoGUI.Package.Inno;
 public class InnoBlock : IDisposable
 {
     const int ChunkSize = 4096;
-    const uint MaxStoredSize = 64 * 1024 * 1024;
+    const long MaxStoredSize = 64 * 1024 * 1024;
 
     // The unpacked data. Nothing is written anywhere.
     public Stream Data { get; }
@@ -22,18 +22,20 @@ public class InnoBlock : IDisposable
         End = end;
     }
 
-    public static InnoBlock Open(Stream file, long start)
+    // `wideSize`: the size of the block is written in 8 bytes (Inno Setup 6.7 and later) instead of 4
+    public static InnoBlock Open(Stream file, long start, bool wideSize)
     {
-        var head = new byte[9];
+        int headerSize = wideSize ? 13 : 9;
+        var head = new byte[headerSize];
         file.Position = start;
-        file.ReadExactly(head, 0, 9);
+        file.ReadExactly(head, 0, headerSize);
 
-        uint stored = BitConverter.ToUInt32(head, 4);
-        bool packed = head[8] != 0;
-        if (stored > MaxStoredSize || start + 9 + stored > file.Length)
+        long stored = wideSize ? BitConverter.ToInt64(head, 4) : BitConverter.ToUInt32(head, 4);
+        bool packed = head[headerSize - 1] != 0;
+        if (stored < 0 || stored > MaxStoredSize || start + headerSize + stored > file.Length)
             throw new InvalidDataException("the Inno Setup data is damaged");
 
-        var raw = new byte[stored];
+        var raw = new byte[(int)stored];
         file.ReadExactly(raw, 0, raw.Length);
 
         var chunks = new MemoryStream();
@@ -45,7 +47,7 @@ public class InnoBlock : IDisposable
         }
 
         chunks.Position = 0;
-        return new InnoBlock(packed ? Unpack(chunks) : chunks, start + 9 + stored);
+        return new InnoBlock(packed ? Unpack(chunks) : chunks, start + headerSize + stored);
     }
 
     // LZMA: 5 bytes of settings, then the data
