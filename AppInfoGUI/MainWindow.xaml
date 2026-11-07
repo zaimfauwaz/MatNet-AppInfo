@@ -152,6 +152,24 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+            <TabItem x:Name="PackageTab" Header="Package Contents" Visibility="Collapsed">
+                <Grid Margin="16,8,16,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="PackageMessage" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                    <DataGrid x:Name="PackageGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="File" Binding="{Binding Path}" Width="3*"/>
+                            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="140"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding TypeText}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
             <TabItem x:Name="OnPcTab" Header="On This PC">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="16,8,16,16">

@@ -49,6 +49,7 @@ public static class SummaryBuilder
         AddRights(findings, input);
         AddPlace(findings, input);
         AddInstaller(findings, input);
+        AddPackage(findings, input);
         AddDriver(findings, input);
 
         foreach (string name in input.Failures)
@@ -107,6 +108,21 @@ public static class SummaryBuilder
             string what = input.SystemActions == 1 ? "1 program or script" : $"{input.SystemActions} programs or scripts";
             findings.Add(new(FindingLevel.Review, $"This installer runs {what} with full system rights"));
         }
+    }
+
+    // What was found inside an installer or self-extracting archive
+    static void AddPackage(List<Finding> findings, SummaryInputs input)
+    {
+        if (input.PackageName == null) return;
+
+        if (input.PackageDisguised > 0)
+            findings.Add(new(FindingLevel.Review, $"The package holds {input.PackageDisguised} program(s) disguised as documents (for example invoice.pdf.exe)"));
+
+        if (input.PackageScripts > 0)
+            findings.Add(new(FindingLevel.Review, $"The package holds {input.PackageScripts} script(s) or shortcut(s)"));
+
+        if (input.PackageEncrypted > 0)
+            findings.Add(new(FindingLevel.Review, "Some files in the package are password-protected, so they cannot be inspected"));
     }
 
     static void AddDriver(List<Finding> findings, SummaryInputs input)

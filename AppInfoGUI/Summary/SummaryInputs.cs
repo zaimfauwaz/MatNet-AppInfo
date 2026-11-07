@@ -15,6 +15,11 @@ public class SummaryInputs
     public bool InTempFolder { get; set; }
     public int AutostartHits { get; set; }              // run keys, services and tasks that start this file
     public int SystemActions { get; set; }              // installer actions that run code as the system
+    public string? PackageName { get; set; }            // set when the file is an installer or self-extracting archive
+    public bool PackageListed { get; set; }
+    public int PackageScripts { get; set; }
+    public int PackageDisguised { get; set; }
+    public int PackageEncrypted { get; set; }
     public DriverCheckOutcome DriverCheck { get; set; } = DriverCheckOutcome.NotApplicable;
 
     // Names of checks that could not run

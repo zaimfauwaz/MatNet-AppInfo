@@ -12,6 +12,7 @@ public class FileKind
         Extension = Path.GetExtension(path).ToLowerInvariant();
     }
 
+    public bool IsProgram => Extension is ".exe" or ".scr";
     public bool IsMsi => Extension == ".msi";
     public bool IsInstaller => Extension is ".msi" or ".msp";
     public bool IsLibrary => Extension is ".dll" or ".rll";

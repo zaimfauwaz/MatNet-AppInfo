@@ -54,6 +54,7 @@ namespace AppInfoGUI
                 LoadHashesAsync(path),
                 LoadDependenciesAsync(path),
                 LoadContentsAsync(path),
+                LoadPackageAsync(path),
                 LoadOnPcAsync(path));
 
             // Every check has reported, so the verdict can be final
