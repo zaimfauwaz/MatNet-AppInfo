@@ -145,6 +145,7 @@
                             <DataGridTextColumn Header="DLL" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Functions" Binding="{Binding FunctionCount}" Width="90"/>
                             <DataGridTextColumn Header="Found" Binding="{Binding Location}" Width="2*"/>
+                            <DataGridTextColumn Header="Signed" Binding="{Binding Signed}" Width="2*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -153,7 +154,7 @@
                     <ListBox x:Name="FunctionList" Grid.Row="3"/>
 
                     <TextBlock Grid.Row="4" Margin="0,8,0,0" FontSize="11" Foreground="Gray" TextWrapping="Wrap"
-                               Text="Only the DLLs needed at start-up are listed. DLLs a program loads later are not shown."/>
+                               Text="Only the DLLs needed at start-up are listed. DLLs a program loads later are not shown. Signatures are checked only for DLLs in the same folder as the file."/>
                 </Grid>
             </TabItem>
             <TabItem Header="Hashes">

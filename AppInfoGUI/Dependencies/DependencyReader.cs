@@ -27,7 +27,13 @@ public static class DependencyReader
             foreach (var import in ImportTable.Read(pe))
             {
                 string where = DependencyLocator.Where(import.Dll, folder, is32Bit);
-                info.Rows.Add(new DependencyRow(import.Dll, import.Functions.Count, where, import.Functions));
+
+                // Windows' own files are trusted through Windows itself, so only the program's own DLLs are checked
+                string signed = where == DependencyLocator.SameFolder
+                    ? DependencySignature.Check(Path.Combine(folder, import.Dll))
+                    : DependencySignature.NotChecked;
+
+                info.Rows.Add(new DependencyRow(import.Dll, import.Functions.Count, where, signed, import.Functions));
             }
 
             if (info.Rows.Count == 0)

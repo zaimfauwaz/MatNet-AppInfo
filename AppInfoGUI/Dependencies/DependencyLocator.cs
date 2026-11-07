@@ -5,6 +5,8 @@ namespace AppInfoGUI.Dependencies;
 // Says where Windows would most likely find an imported DLL
 internal static class DependencyLocator
 {
+    public const string SameFolder = "Same folder as this file";
+
     public static string Where(string dll, string fileFolder, bool is32Bit)
     {
         // These names are not real files. Windows maps them to the real DLLs itself.
@@ -13,7 +15,7 @@ internal static class DependencyLocator
             return "Windows API set (virtual)";
 
         if (File.Exists(Path.Combine(fileFolder, dll)))
-            return "Same folder as this file";
+            return SameFolder;
 
         string system = is32Bit
             ? Environment.GetFolderPath(Environment.SpecialFolder.SystemX86)
