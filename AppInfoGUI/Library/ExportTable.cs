@@ -1,5 +1,6 @@
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using AppInfoGUI.PE;
 
 namespace AppInfoGUI.Library;
 
@@ -30,16 +31,9 @@ internal static class ExportTable
         for (int i = 0; i < nameCount; i++)
         {
             int nameAddress = (int)addresses.ReadUInt32();
-            names.Add(ReadName(pe, nameAddress));
+            names.Add(PeText.ReadName(pe, nameAddress));
         }
 
         return new ExportInfo(functionCount, names, isDotNet);
-    }
-
-    static string ReadName(PEReader pe, int address)
-    {
-        BlobReader reader = pe.GetSectionData(address).GetReader();
-        int length = reader.IndexOf(0);   // names end with a zero byte
-        return reader.ReadUTF8(length < 0 ? reader.RemainingBytes : length);
     }
 }

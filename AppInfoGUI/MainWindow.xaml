@@ -121,6 +121,41 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+            <TabItem x:Name="DependenciesTab" Header="Dependencies">
+                <Grid Margin="16,8,16,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button x:Name="RefreshDependenciesButton" Content="Refresh dependencies" Padding="12,4"
+                                Click="RefreshDependencies_Click"/>
+                        <TextBlock x:Name="DependencyMessage" Foreground="Gray" TextWrapping="Wrap"
+                                   VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="DependencyGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" SelectionMode="Single" HeadersVisibility="Column"
+                              SelectionChanged="DependencyGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="DLL" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Functions" Binding="{Binding FunctionCount}" Width="90"/>
+                            <DataGridTextColumn Header="Found" Binding="{Binding Location}" Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock x:Name="FunctionTitle" Grid.Row="2" Text="Select a DLL to see its functions"
+                               Style="{StaticResource SectionHeader}"/>
+                    <ListBox x:Name="FunctionList" Grid.Row="3"/>
+
+                    <TextBlock Grid.Row="4" Margin="0,8,0,0" FontSize="11" Foreground="Gray" TextWrapping="Wrap"
+                               Text="Only the DLLs needed at start-up are listed. DLLs a program loads later are not shown."/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Hashes">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="16,4,16,16">

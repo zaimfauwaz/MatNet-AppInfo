@@ -22,14 +22,16 @@ namespace AppInfoGUI
             _isLibrary = extension is ".dll" or ".rll";
             _isDriver = extension is ".sys" or ".ocx";
             PeTab.Visibility = VisibleIf(!_isInstaller);
+            DependenciesTab.Visibility = VisibleIf(!_isInstaller);
 
-            // Installers have their own sections instead of the file version ones~
+            // Installers have their own sections instead of the file version ones
             VersionSection.Visibility = VisibleIf(!_isInstaller);
             InstallerSection.Visibility = VisibleIf(_isInstaller);
             LibrarySection.Visibility = VisibleIf(_isLibrary);
             DriverSection.Visibility = VisibleIf(_isDriver);
         }
 
+        string _filePath = "";   // the file this window was opened for
         bool _isInstaller;
         bool _isLibrary;
         bool _isDriver;

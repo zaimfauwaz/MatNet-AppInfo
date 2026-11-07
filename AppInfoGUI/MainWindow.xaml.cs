@@ -23,6 +23,7 @@ namespace AppInfoGUI
             }
 
             string path = args[1];
+            _filePath = path;
             ApplyFileType(path);
 
             // Independent of each other, so a slow signature check never delays the details
@@ -33,7 +34,8 @@ namespace AppInfoGUI
             Task library = LoadLibraryAsync(path);
             Task driver = LoadDriverAsync(path);
             Task hashes = LoadHashesAsync(path);
-            await Task.WhenAll(details, signature, pe, installer, library, driver, hashes);
+            Task dependencies = LoadDependenciesAsync(path);
+            await Task.WhenAll(details, signature, pe, installer, library, driver, hashes, dependencies);
         }
 
         async Task LoadSignatureAsync(string path)
