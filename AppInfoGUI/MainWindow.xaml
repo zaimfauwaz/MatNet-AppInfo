@@ -109,6 +109,9 @@
                         <TextBlock Text="Sections" Style="{StaticResource SectionHeader}"/>
                         <ItemsControl x:Name="PeSectionList" ItemTemplate="{StaticResource RowTemplate}"/>
 
+                        <TextBlock Text="Manifest" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeManifestList" ItemTemplate="{StaticResource RowTemplate}"/>
+
                         <TextBlock Text=".NET" Style="{StaticResource SectionHeader}"/>
                         <ItemsControl x:Name="PeDotNetList" ItemTemplate="{StaticResource RowTemplate}"/>
 
@@ -121,7 +124,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem x:Name="InstallsTab" Header="Package Contents" Visibility="Collapsed">
+            <TabItem x:Name="InstallsTab" Header="Installer Contents" Visibility="Collapsed">
                 <Grid Margin="16,8,16,16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

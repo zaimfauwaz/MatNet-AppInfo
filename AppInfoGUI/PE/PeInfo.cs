@@ -10,5 +10,6 @@ public class PeInfo
     public List<DetailRow> HeaderRows { get; } = new();
     public List<DetailRow> SecurityRows { get; } = new();
     public List<DetailRow> SectionRows { get; } = new();
+    public List<DetailRow> ManifestRows { get; } = new();
     public List<DetailRow> DotNetRows { get; } = new();
 }

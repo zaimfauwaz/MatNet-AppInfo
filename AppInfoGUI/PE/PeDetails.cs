@@ -27,6 +27,7 @@ public static class PeDetails
             PeSecurityRows.Fill(info.SecurityRows, headers.PEHeader);
             PeSectionRows.Fill(info.SectionRows, stream, headers);
             DotNetRows.Fill(info.DotNetRows, pe);
+            ManifestRows.Fill(info.ManifestRows, path);
         }
         catch (BadImageFormatException)
         {

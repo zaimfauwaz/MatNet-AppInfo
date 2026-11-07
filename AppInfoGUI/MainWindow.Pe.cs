@@ -40,6 +40,7 @@ namespace AppInfoGUI
             PeHeaderList.ItemsSource = info.HeaderRows;
             PeSecurityList.ItemsSource = info.SecurityRows;
             PeSectionList.ItemsSource = info.SectionRows;
+            PeManifestList.ItemsSource = info.ManifestRows;
             PeDotNetList.ItemsSource = info.DotNetRows;
         }
     }
