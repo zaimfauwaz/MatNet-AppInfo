@@ -5,7 +5,7 @@ using AppInfoGUI.Library;
 
 namespace AppInfoGUI.Driver;
 
-public record DriverInfo(string Title, List<DetailRow> Rows);
+public record DriverInfo(string Title, List<DetailRow> Rows, DriverCheckOutcome Check = DriverCheckOutcome.NotApplicable);
 
 // The extra rows for a .sys driver or an .ocx control. Nothing is loaded or run.
 public static class DriverReader
@@ -17,15 +17,16 @@ public static class DriverReader
 
         if (isDriver)
         {
-            FillDriver(rows, path);
-            return new DriverInfo("Driver on this PC", rows);
+            DriverCheckResult check = VulnerableDriverCheck.Run(path);
+            FillDriver(rows, path, check);
+            return new DriverInfo("Driver on this PC", rows, check.Outcome);
         }
 
         FillControl(rows, path);
         return new DriverInfo("ActiveX control on this PC", rows);
     }
 
-    static void FillDriver(List<DetailRow> rows, string path)
+    static void FillDriver(List<DetailRow> rows, string path, DriverCheckResult check)
     {
         DriverService? service = null;
         bool searched = false;
@@ -51,7 +52,7 @@ public static class DriverReader
             rows.Add(new("Starts", service.StartType));
         }
 
-        rows.Add(new("Known vulnerable driver", VulnerableDriverCheck.Describe(path)));
+        rows.Add(new("Known vulnerable driver", check.Text));
         rows.Add(new("In a standard driver folder", Safe.Text(() => StandardFolder(path))));
         rows.Add(new("Standard driver model (WDM)", Safe.Text(() => Wdm(path))));
     }

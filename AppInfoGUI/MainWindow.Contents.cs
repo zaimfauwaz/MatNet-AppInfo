@@ -16,6 +16,9 @@ namespace AppInfoGUI
             {
                 InstallContents contents = await Task.Run(() => ContentsReader.Read(path));
                 ShowContents(contents);
+
+                _summary.SystemActions = contents.Actions.Rows.Count(a => a.RunsCodeAsSystem);
+                UpdateSummary();
             }
             catch (Exception ex)
             {

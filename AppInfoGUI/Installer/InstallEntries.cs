@@ -1,10 +1,14 @@
 namespace AppInfoGUI.Installer;
 
-// One row in each of the tables on the "What it installs" tab
+// One row in each of the tables on the "Installer Contents" tab
 public record FileEntry(string Name, string Folder, string Size);
 public record RegistryEntry(string Root, string Key, string Name, string Value);
 public record ServiceEntry(string Name, string DisplayName, string Start, string Account);
-public record ActionEntry(string Name, string Kind, string RunsAs, string Detail);
+public record ActionEntry(string Name, string Kind, string RunsAs, string Detail)
+{
+    // Runs a program, script or DLL with full system rights
+    public bool RunsCodeAsSystem => RunsAs.StartsWith("System") && Kind.StartsWith("Runs");
+}
 
 // The rows to show, and how many there really are
 public class InstallSection<T>

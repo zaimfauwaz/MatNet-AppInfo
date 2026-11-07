@@ -15,10 +15,14 @@ namespace AppInfoGUI
                 DriverInfo info = await Task.Run(() => DriverReader.Read(path));
                 DriverTitle.Text = info.Title;
                 DriverList.ItemsSource = info.Rows;
+
+                _summary.DriverCheck = info.Check;
+                UpdateSummary();
             }
             catch (Exception)
             {
                 DriverSection.Visibility = VisibleIf(false);
+                _summary.Failures.Add("driver details");
             }
         }
     }

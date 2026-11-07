@@ -7,6 +7,7 @@ internal static class SignatureRows
 {
     public static List<DetailRow> From(SignatureResult r) => new()
     {
+        new("Windows verdict", r.Verdict),
         new("Signature type", r.SignatureType),
         new("Catalog file", r.CatalogFile),
         new("Publisher", r.Publisher),

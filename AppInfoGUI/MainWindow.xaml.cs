@@ -36,8 +36,11 @@ namespace AppInfoGUI
                 return;
             }
 
+            ShowBanner("Checking...", Brushes.LightGray);
+
             // Independent of each other, so a slow signature check never delays the details
             await Task.WhenAll(
+                LoadSummaryChecksAsync(path),
                 LoadDetailsAsync(path),
                 LoadSignatureAsync(path),
                 LoadPeAsync(path),
@@ -48,6 +51,10 @@ namespace AppInfoGUI
                 LoadDependenciesAsync(path),
                 LoadContentsAsync(path),
                 LoadOnPcAsync(path));
+
+            // Every check has reported, so the verdict can be final
+            _summary.Finished = true;
+            UpdateSummary();
         }
     }
 }

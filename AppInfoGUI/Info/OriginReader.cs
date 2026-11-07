@@ -16,6 +16,9 @@ internal static class OriginReader
         return zone == null ? "Marked, but the zone is unknown" : ZoneName(zone);
     }
 
+    // The zone number Windows wrote ("3" is the internet). Null means the file was never marked.
+    public static string? ZoneId(string path) => Value(ReadMark(path), "ZoneId");
+
     // The web page the download was started from
     public static string? DownloadedFrom(string path) => Value(ReadMark(path), "ReferrerUrl") ?? NotRecorded(path);
 

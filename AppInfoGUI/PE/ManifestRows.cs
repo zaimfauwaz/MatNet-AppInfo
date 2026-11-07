@@ -46,6 +46,16 @@ internal static class ManifestRows
         rows.Add(new("Visual styles", Safe.Text(() => VisualStyles(root))));
     }
 
+    // The "level" the manifest asks for, for example "requireAdministrator". Null when it does not say.
+    public static string? RequestedLevel(string path)
+    {
+        string? text = ManifestText.Read(path);
+        if (text == null) return null;
+
+        XElement root = XDocument.Parse(text).Root!;
+        return Attribute(Find(root, "requestedExecutionLevel").FirstOrDefault(), "level");
+    }
+
     // Elements are found by their local name, because manifests use many namespaces
     static IEnumerable<XElement> Find(XElement root, string name) =>
         root.Descendants().Where(e => e.Name.LocalName == name);

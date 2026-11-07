@@ -22,6 +22,11 @@ namespace AppInfoGUI
                 OnPcAutostartList.ItemsSource = info.AutostartRows;
                 OnPcFirewallList.ItemsSource = info.FirewallRows;
                 OnPcMessage.Text = "Checked " + DateTime.Now.ToString("HH:mm:ss");
+
+                _summary.AutostartHits = info.AutostartHits;
+                if (info.AutostartFailed && !_summary.Failures.Contains("start-up entries"))
+                    _summary.Failures.Add("start-up entries");
+                UpdateSummary();
             }
             catch (Exception ex)
             {
