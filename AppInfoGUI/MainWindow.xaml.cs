@@ -35,7 +35,8 @@ namespace AppInfoGUI
             Task driver = LoadDriverAsync(path);
             Task hashes = LoadHashesAsync(path);
             Task dependencies = LoadDependenciesAsync(path);
-            await Task.WhenAll(details, signature, pe, installer, library, driver, hashes, dependencies);
+            Task contents = LoadContentsAsync(path);
+            await Task.WhenAll(details, signature, pe, installer, library, driver, hashes, dependencies, contents);
         }
 
         async Task LoadSignatureAsync(string path)

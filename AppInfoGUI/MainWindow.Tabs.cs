@@ -23,6 +23,7 @@ namespace AppInfoGUI
             _isDriver = extension is ".sys" or ".ocx";
             PeTab.Visibility = VisibleIf(!_isInstaller);
             DependenciesTab.Visibility = VisibleIf(!_isInstaller);
+            InstallsTab.Visibility = VisibleIf(extension == ".msi");
 
             // Installers have their own sections instead of the file version ones
             VersionSection.Visibility = VisibleIf(!_isInstaller);

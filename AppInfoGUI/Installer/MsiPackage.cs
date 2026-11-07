@@ -27,7 +27,7 @@ internal sealed class MsiPackage : IDisposable
         Query($"SELECT `{column}` FROM `{table}`", 1).Count();
 
     // A missing table gives no rows
-    IEnumerable<string[]> Query(string sql, uint columns)
+    internal IEnumerable<string[]> Query(string sql, uint columns)
     {
         if (MsiNative.MsiDatabaseOpenView(_database, sql, out IntPtr view) != 0)
             yield break;
@@ -59,9 +59,21 @@ internal sealed class MsiPackage : IDisposable
 
     static string Field(IntPtr record, uint index)
     {
+        const uint MoreData = 234;
         var buffer = new System.Text.StringBuilder(2048);
         uint size = 2048;
-        return MsiNative.MsiRecordGetString(record, index, buffer, ref size) == 0 ? buffer.ToString() : "";
+
+        uint result = MsiNative.MsiRecordGetString(record, index, buffer, ref size);
+
+        // A long value needs a bigger buffer. Windows tells us how big.
+        if (result == MoreData)
+        {
+            buffer = new System.Text.StringBuilder((int)size + 1);
+            size++;
+            result = MsiNative.MsiRecordGetString(record, index, buffer, ref size);
+        }
+
+        return result == 0 ? buffer.ToString() : "";
     }
 
     public void Dispose() => MsiNative.MsiCloseHandle(_database);
