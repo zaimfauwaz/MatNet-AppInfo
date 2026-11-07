@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.PortableExecutable;
@@ -15,9 +15,6 @@ public static class PackageDetector
     const int WindowSize = 128 * 1024;          // how much of the extra data we look through
     const long UnknownDataLimit = 1024 * 1024;  // extra data below this size is ignored
 
-    static readonly byte[] SevenZipMark = { 0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C };
-    static readonly byte[] RarMark = { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07 };               // "Rar!" 1A 07
-    static readonly byte[] ZipMark = { 0x50, 0x4B, 0x03, 0x04 };                           // "PK" 03 04
     static readonly byte[] PyInstallerMark = Encoding.ASCII.GetBytes("MEI").Concat(new byte[] { 0x0C, 0x0B, 0x0A, 0x0B, 0x0E }).ToArray();
 
     public static Detection Detect(string path)
@@ -56,9 +53,9 @@ public static class PackageDetector
         // Whichever mark comes first is the archive
         var found = new (int Index, PackageFormat Format)[]
         {
-            (window.AsSpan().IndexOf(SevenZipMark), PackageFormat.SevenZip),
-            (window.AsSpan().IndexOf(RarMark), PackageFormat.Rar),
-            (window.AsSpan().IndexOf(ZipMark), PackageFormat.Zip)
+            (window.AsSpan().IndexOf(Signatures.SevenZip), PackageFormat.SevenZip),
+            (window.AsSpan().IndexOf(Signatures.Rar), PackageFormat.Rar),
+            (window.AsSpan().IndexOf(Signatures.Zip), PackageFormat.Zip)
         };
 
         var first = found.Where(f => f.Index >= 0).OrderBy(f => f.Index).ToList();
