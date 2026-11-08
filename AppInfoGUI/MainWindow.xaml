@@ -139,6 +139,9 @@
                         <TextBlock Text="Security flags" Style="{StaticResource SectionHeader}"/>
                         <ItemsControl x:Name="PeSecurityList" ItemTemplate="{StaticResource RowTemplate}"/>
 
+                        <TextBlock Text="Build" Style="{StaticResource SectionHeader}"/>
+                        <ItemsControl x:Name="PeBuildList" ItemTemplate="{StaticResource RowTemplate}"/>
+
                         <TextBlock Text="Sections" Style="{StaticResource SectionHeader}"/>
                         <ItemsControl x:Name="PeSectionList" ItemTemplate="{StaticResource RowTemplate}"/>
 

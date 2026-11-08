@@ -25,6 +25,7 @@ public static class PeDetails
 
             PeHeaderRows.Fill(info.HeaderRows, headers);
             PeSecurityRows.Fill(info.SecurityRows, headers.PEHeader);
+            FillBuild(info, pe);
             info.PackedSections.AddRange(PeSectionRows.Fill(info.SectionRows, stream, headers));
             DotNetRows.Fill(info.DotNetRows, pe);
             ManifestRows.Fill(info.ManifestRows, path);
@@ -39,5 +40,19 @@ public static class PeDetails
         }
 
         return info;
+    }
+
+    // Optional part: if the debug data is damaged, say so in its own section and keep the rest
+    static void FillBuild(PeInfo info, PEReader pe)
+    {
+        try
+        {
+            PeBuildRows.Fill(info.BuildRows, pe);
+        }
+        catch (Exception)
+        {
+            info.BuildRows.Clear();
+            info.BuildRows.Add(new("Debug information", "Not available"));
+        }
     }
 }
