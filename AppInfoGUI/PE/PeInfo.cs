@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 
 namespace AppInfoGUI.PE;
 
@@ -12,4 +12,7 @@ public class PeInfo
     public List<DetailRow> SectionRows { get; } = new();
     public List<DetailRow> ManifestRows { get; } = new();
     public List<DetailRow> DotNetRows { get; } = new();
+
+    // Sections that look packed (compressed or encrypted code), for the summary
+    public List<string> PackedSections { get; } = new();
 }

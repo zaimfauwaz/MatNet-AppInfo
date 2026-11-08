@@ -13,6 +13,8 @@ public class SummaryInputs
     public bool? Downloaded { get; set; }               // marked as downloaded from the internet
     public string? RequestedLevel { get; set; }         // from the manifest, for example "requireAdministrator"
     public bool InTempFolder { get; set; }
+    public string? ContentMismatch { get; set; }        // set when the file's contents do not fit its name
+    public List<string> PackedSections { get; } = new();   // code sections that look compressed or encrypted
     public string? FileName { get; set; }               // the name the file has now
     public string? OriginalName { get; set; }           // the name the file says it was built with
     public int AutostartHits { get; set; }              // run keys, services and tasks that start this file

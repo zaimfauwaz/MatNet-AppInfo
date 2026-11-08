@@ -1,4 +1,4 @@
-using AppInfoGUI.Hashes;
+﻿using AppInfoGUI.Hashes;
 using AppInfoGUI.PE;
 
 namespace AppInfoGUI
@@ -12,6 +12,9 @@ namespace AppInfoGUI
             {
                 PeInfo info = await Task.Run(() => PeDetails.Read(path));
                 ShowPe(info);
+
+                _summary.PackedSections.AddRange(info.PackedSections);
+                UpdateSummary();
 
                 // Shown after the rest, because it has to read the whole file
                 if (info.Message == "")

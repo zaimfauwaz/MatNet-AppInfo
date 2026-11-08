@@ -11,6 +11,7 @@ public class FileFacts
     public bool? Downloaded { get; set; }
     public string? RequestedLevel { get; set; }
     public bool InTempFolder { get; set; }
+    public string? ContentMismatch { get; set; }
     public string? OriginalName { get; set; }
     public List<string> Failures { get; } = new();
 }
@@ -24,6 +25,7 @@ public static class SummaryChecks
         Try(facts, "download origin", () => facts.Downloaded = IsDownloaded(path));
         Try(facts, "file location", () => facts.InTempFolder = InTempFolder(path));
         Try(facts, "version details", () => ReadVersion(path, facts));
+        Try(facts, "file contents", () => facts.ContentMismatch = FileTypeDescriber.Mismatch(path, FileContent.Detect(path)));
 
         // Installer packages have no manifest
         if (!isInstaller)

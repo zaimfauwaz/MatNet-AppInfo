@@ -4,45 +4,70 @@ namespace AppInfoGUI.Info;
 
 internal static class FileTypeDescriber
 {
-    static readonly byte[] ExecutableStart = { 0x4D, 0x5A };   // "MZ", the start of every Windows executable
-    static readonly byte[] InstallerStart = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 };   // the start of an MSI or MSP
-
-    // Names the file type from its extension, and warns if the content does not match
+    // Names the file type from its extension
     public static string Describe(string path)
     {
         string extension = Path.GetExtension(path).ToLowerInvariant();
-
-        string name = extension switch
-        {
-            ".exe" => "Application",
-            ".dll" => "Dynamic-link library",
-            ".ocx" => "ActiveX control",
-            ".sys" => "Driver",
-            ".msi" => "Windows Installer package",
-            ".msp" => "Windows Installer patch",
-            _ => "Other file"
-        };
-
-        string result = $"{name} ({extension})";
-
-        bool shouldBeExecutable = extension is ".exe" or ".dll" or ".ocx" or ".sys";
-        bool shouldBeInstaller = extension is ".msi" or ".msp";
-
-        if (shouldBeExecutable && !StartsWith(path, ExecutableStart))
-            result += " - WARNING: content is not a Windows executable";
-
-        if (shouldBeInstaller && !StartsWith(path, InstallerStart))
-            result += " - WARNING: content is not an installer package";
-
-        return result;
+        return $"{NameFor(extension)} ({extension})";
     }
 
-    static bool StartsWith(string path, byte[] expected)
+    // Names what the first bytes say, and warns if that does not fit the name
+    public static string DescribeContents(string path)
     {
-        using var stream = File.OpenRead(path);
-        byte[] actual = new byte[expected.Length];
-        int read = stream.Read(actual, 0, actual.Length);
-
-        return read == expected.Length && actual.AsSpan().SequenceEqual(expected);
+        ContentInfo content = FileContent.Detect(path);
+        return Mismatch(path, content) == null ? content.Name : content.Name + " - does not match the name";
     }
+
+    // Null when the contents fit the name, or when the name is not one we can check
+    public static string? Mismatch(string path, ContentInfo content)
+    {
+        string extension = Path.GetExtension(path).ToLowerInvariant();
+        ContentType? expected = Expected(extension);
+
+        // Documents have many inner formats, so for them only a hidden program is worth a line
+        if (expected == null && content.Type == ContentType.Program && IsDocumentName(extension))
+            return $"The name says {NameFor(extension)} ({extension}), but the contents are {content.Name}";
+
+        if (expected == null || content.Type == expected)
+            return null;
+
+        return $"The name says {NameFor(extension)} ({extension}), but the contents are {content.Name}";
+    }
+
+    static bool IsDocumentName(string extension) => extension is ".txt" or ".doc" or ".docx" or ".xls" or ".xlsx";
+
+    static string NameFor(string extension) => extension switch
+    {
+        ".exe" => "Application",
+        ".scr" => "Screen saver",
+        ".dll" => "Dynamic-link library",
+        ".rll" => "Resource library",
+        ".ocx" => "ActiveX control",
+        ".sys" => "Driver",
+        ".msi" => "Windows Installer package",
+        ".msp" => "Windows Installer patch",
+        ".pdf" => "PDF document",
+        ".png" or ".jpg" or ".jpeg" or ".gif" => "Picture",
+        ".zip" => "ZIP archive",
+        ".7z" => "7-Zip archive",
+        ".rar" => "RAR archive",
+        ".cab" => "Cabinet (CAB) archive",
+        ".txt" => "Text file",
+        ".doc" or ".docx" => "Word document",
+        ".xls" or ".xlsx" => "Excel workbook",
+        _ => "Other file"
+    };
+
+    static ContentType? Expected(string extension) => extension switch
+    {
+        ".exe" or ".scr" or ".dll" or ".rll" or ".ocx" or ".sys" => ContentType.Program,
+        ".msi" or ".msp" => ContentType.OleFile,
+        ".pdf" => ContentType.Pdf,
+        ".png" or ".jpg" or ".jpeg" or ".gif" => ContentType.Picture,
+        ".zip" => ContentType.Zip,
+        ".7z" => ContentType.SevenZip,
+        ".rar" => ContentType.Rar,
+        ".cab" => ContentType.Cabinet,
+        _ => null
+    };
 }

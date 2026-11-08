@@ -21,6 +21,7 @@ namespace AppInfoGUI
                 _summary.InTempFolder = facts.InTempFolder;
                 _summary.FileName = Path.GetFileName(path);
                 _summary.OriginalName = facts.OriginalName;
+                _summary.ContentMismatch = facts.ContentMismatch;
                 _summary.Failures.AddRange(facts.Failures);
             }
             catch (Exception)

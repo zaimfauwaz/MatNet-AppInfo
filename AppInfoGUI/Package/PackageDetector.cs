@@ -18,7 +18,14 @@ public static class PackageDetector
         using FileStream stream = File.OpenRead(path);
         using var pe = new PEReader(stream);
 
-        if (pe.PEHeaders.PEHeader == null) return new Detection(null, null);
+        try
+        {
+            if (pe.PEHeaders.PEHeader == null) return new Detection(null, null);
+        }
+        catch (BadImageFormatException)
+        {
+            return new Detection(null, null);       // not a Windows program (a renamed file), so there is no package to read
+        }
 
         Overlay? overlay = Overlay.Find(pe, stream);
 

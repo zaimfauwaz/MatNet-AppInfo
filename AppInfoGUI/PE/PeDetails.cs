@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using System.IO;
 using System.Reflection.PortableExecutable;
 
@@ -25,7 +25,7 @@ public static class PeDetails
 
             PeHeaderRows.Fill(info.HeaderRows, headers);
             PeSecurityRows.Fill(info.SecurityRows, headers.PEHeader);
-            PeSectionRows.Fill(info.SectionRows, stream, headers);
+            info.PackedSections.AddRange(PeSectionRows.Fill(info.SectionRows, stream, headers));
             DotNetRows.Fill(info.DotNetRows, pe);
             ManifestRows.Fill(info.ManifestRows, path);
         }

@@ -10,6 +10,9 @@ internal static class WinTrust
     public const uint ActionVerify = 1;
     public const uint ActionClose = 2;
 
+    public const uint VerifySpecific = 1;        // check only the signature at Index
+    public const uint GetSecondaryCount = 2;     // report how many signatures follow the first
+
     public static readonly Guid GenericVerify = new("00AAC56B-CD44-11d0-8CC2-00C04FC295EE");
 
     [DllImport("wintrust.dll", ExactSpelling = true)]
@@ -25,6 +28,18 @@ internal static class WinTrust
         [MarshalAs(UnmanagedType.LPWStr)] public string FilePath;
         public IntPtr FileHandle;
         public IntPtr KnownSubject;
+    }
+
+    // WINTRUST_SIGNATURE_SETTINGS: picks one of the signatures on a file
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WinTrustSignatureSettings
+    {
+        public uint Size;
+        public uint Index;
+        public uint Flags;
+        public uint SecondaryCount;
+        public uint VerifiedIndex;
+        public IntPtr CryptoPolicy;
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -49,7 +49,9 @@ public static class SummaryBuilder
         AddDownload(findings, input);
         AddRights(findings, input);
         AddPlace(findings, input);
+        AddPacking(findings, input);
         AddNameMismatch(findings, input);
+        AddContentMismatch(findings, input);
         AddInstaller(findings, input);
         AddPackage(findings, input);
         AddDriver(findings, input);
@@ -114,6 +116,20 @@ public static class SummaryBuilder
 
         if (!originalType.Equals(currentType, StringComparison.OrdinalIgnoreCase))
             findings.Add(new(FindingLevel.Review, $"The file says it was built as \"{original}\", but it is now named \"{current}\""));
+    }
+
+    static void AddContentMismatch(List<Finding> findings, SummaryInputs input)
+    {
+        if (input.ContentMismatch != null)
+            findings.Add(new(FindingLevel.Review, input.ContentMismatch));
+    }
+
+    static void AddPacking(List<Finding> findings, SummaryInputs input)
+    {
+        if (input.PackedSections.Count == 0) return;
+
+        string sections = string.Join(", ", input.PackedSections);
+        findings.Add(new(FindingLevel.Review, $"This program looks packed (compressed or encrypted code in {sections}), which can hide what it really does"));
     }
 
     static void AddInstaller(List<Finding> findings, SummaryInputs input)

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
 namespace AppInfoGUI.Info;
@@ -63,7 +63,8 @@ public static class ApplicationDetails
     {
         info.FileRows.Add(new("File name", file.Name));
         info.FileRows.Add(new("Folder", Safe.Text(() => file.DirectoryName)));
-        info.FileRows.Add(new("Type", Safe.Text(() => FileTypeDescriber.Describe(path))));
+        info.FileRows.Add(new("Type by its name", Safe.Text(() => FileTypeDescriber.Describe(path))));
+        info.FileRows.Add(new("Type by its contents", Safe.Text(() => FileTypeDescriber.DescribeContents(path))));
         info.FileRows.Add(new("Size", Safe.Text(() => TextFormat.Size(file.Length))));
         info.FileRows.Add(new("Created", Safe.Text(() => file.CreationTime.ToString("yyyy-MM-dd HH:mm"))));
         info.FileRows.Add(new("Modified", Safe.Text(() => file.LastWriteTime.ToString("yyyy-MM-dd HH:mm"))));

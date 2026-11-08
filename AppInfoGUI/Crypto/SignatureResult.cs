@@ -20,5 +20,8 @@ namespace AppInfoGUI.Crypto
         public string Expiry { get; set; } = NotAvailable;
         public string Chain { get; set; } = NotAvailable;
         public string Validation { get; set; } = NotAvailable;
+
+        // Every signature in the file, when it carries its own. Empty if they could not be read.
+        public List<SignatureEntry> Signatures { get; } = new();
     }
 }

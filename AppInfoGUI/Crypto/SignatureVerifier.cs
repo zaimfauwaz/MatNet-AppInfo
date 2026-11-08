@@ -4,7 +4,7 @@ namespace AppInfoGUI.Crypto;
 
 public static class SignatureVerifier
 {
-    const uint NoSignature = 0x800B0100;
+    const uint NoSignature = EmbeddedVerifier.NoSignature;
 
     public static SignatureResult Check(string path)
     {
@@ -39,10 +39,23 @@ public static class SignatureVerifier
             // The certificate details are extra. The verdict above is still correct without them.
         }
 
+        // A file can carry more than one signature. If they cannot be read, the tab shows the first one only.
+        if (result.SignatureType == "Embedded")
+        {
+            try
+            {
+                result.Signatures.AddRange(SignatureList.Read(path));
+            }
+            catch (Exception)
+            {
+                // the extra signatures are extra too
+            }
+        }
+
         return result;
     }
 
-    static string Describe(uint code) => code switch
+    internal static string Describe(uint code) => code switch
     {
         0 => "Valid: signature intact and trusted",
         0x800B0100 => "Not signed (no embedded or catalog signature)",

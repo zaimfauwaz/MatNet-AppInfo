@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using System.IO;
 using System.Reflection.PortableExecutable;
 
@@ -10,16 +10,21 @@ internal static class PeSectionRows
 
     static readonly string[] PackerNames = { "UPX", ".aspack", ".adata", ".themida", ".vmp", ".petite", ".mpress" };
 
-    public static void Fill(List<DetailRow> rows, Stream stream, PEHeaders headers)
+    // Adds one row per section. Returns the sections that look packed.
+    public static List<string> Fill(List<DetailRow> rows, Stream stream, PEHeaders headers)
     {
+        var packed = new List<string>();
+
         foreach (SectionHeader section in headers.SectionHeaders)
         {
             string name = section.Name;
-            rows.Add(new(name, Safe.Text(() => Describe(stream, section))));
+            rows.Add(new(name, Safe.Text(() => Describe(stream, section, packed))));
         }
+
+        return packed;
     }
 
-    static string Describe(Stream stream, SectionHeader section)
+    static string Describe(Stream stream, SectionHeader section, List<string> packed)
     {
         string size = TextFormat.Size(section.SizeOfRawData);
         if (section.SizeOfRawData == 0)
@@ -28,11 +33,19 @@ internal static class PeSectionRows
         double entropy = Entropy(stream, section.PointerToRawData, section.SizeOfRawData);
         string text = $"{size}, entropy {entropy:0.00} of 8";
 
-        if (entropy >= HighEntropy)
-            text += " - high (packed or encrypted?)";
+        // Random-looking code is the sign of a packer. Random-looking data (pictures, resources) is normal.
+        bool isCode = section.SectionCharacteristics.HasFlag(SectionCharacteristics.ContainsCode)
+                   || section.SectionCharacteristics.HasFlag(SectionCharacteristics.MemExecute);
+        bool packerName = PackerNames.Any(p => section.Name.StartsWith(p, StringComparison.OrdinalIgnoreCase));
 
-        if (PackerNames.Any(p => section.Name.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
+        if (entropy >= HighEntropy)
+            text += isCode ? " - code that looks packed or encrypted" : " - high (compressed or encrypted data)";
+
+        if (packerName)
             text += " - known packer section name";
+
+        if (packerName || (isCode && entropy >= HighEntropy))
+            packed.Add(section.Name);
 
         return text;
     }
