@@ -15,9 +15,11 @@ internal static class PeBuildRows
         if (entries.Any(e => e.Type == DebugDirectoryEntryType.Reproducible))
             rows.Add(new("Reproducible build", "Yes - the build date in the header is a hash, not a real time"));
 
-        foreach (DebugDirectoryEntry entry in entries.Where(e => e.Type == DebugDirectoryEntryType.CodeView))
+        // Only the first CodeView entry is described
+        DebugDirectoryEntry? codeView = entries.Cast<DebugDirectoryEntry?>().FirstOrDefault(e => e!.Value.Type == DebugDirectoryEntryType.CodeView);
+        if (codeView != null)
         {
-            CodeViewDebugDirectoryData data = pe.ReadCodeViewDebugDirectoryData(entry);
+            CodeViewDebugDirectoryData data = pe.ReadCodeViewDebugDirectoryData(codeView.Value);
 
             rows.Add(new("Debug file path", data.Path));
             rows.Add(new("What the path shows", Safe.Text(() => WhatPathShows(data.Path))));
@@ -32,7 +34,7 @@ internal static class PeBuildRows
     // A path like C:\Users\jdoe\source\... names the developer's account
     static string WhatPathShows(string path)
     {
-        Match user = Regex.Match(path, @"^[A-Za-z]:\\Users\\([^\\]+)\\", RegexOptions.IgnoreCase);
+        Match user = Regex.Match(path, @"^[A-Za-z]:\\Users\\([^\\]+)\\", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
         if (user.Success)
             return $"The developer's account name (\"{user.Groups[1].Value}\") and project folder";
 
