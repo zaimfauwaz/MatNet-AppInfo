@@ -42,16 +42,11 @@ internal static class OriginReader
     {
         if (lines == null) return null;
 
-        foreach (string line in lines)
-        {
-            if (line.StartsWith(name + "=", StringComparison.OrdinalIgnoreCase))
-            {
-                string value = line.Substring(name.Length + 1).Trim();
-                return value == "" ? null : value;
-            }
-        }
+        string? line = lines.FirstOrDefault(l => l.StartsWith(name + "=", StringComparison.OrdinalIgnoreCase));
+        if (line == null) return null;
 
-        return null;
+        string value = line.Substring(name.Length + 1).Trim();
+        return value == "" ? null : value;
     }
 
     static string NotRecorded(string path) =>

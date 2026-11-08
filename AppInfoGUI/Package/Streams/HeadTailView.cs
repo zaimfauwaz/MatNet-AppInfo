@@ -9,7 +9,6 @@ internal class HeadTailView : Stream
     readonly byte[] _head;
     readonly byte[] _tail;
     readonly long _length;
-    long _position;
 
     public HeadTailView(byte[] head, byte[] tail, long length)
     {
@@ -20,25 +19,25 @@ internal class HeadTailView : Stream
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        count = (int)Math.Min(count, _length - _position);
+        count = (int)Math.Min(count, _length - Position);
         if (count <= 0) return 0;
 
         long tailStart = _length - _tail.Length;
-        if (_position < _head.Length)
+        if (Position < _head.Length)
         {
-            count = (int)Math.Min(count, _head.Length - _position);
-            Array.Copy(_head, _position, buffer, offset, count);
+            count = (int)Math.Min(count, _head.Length - Position);
+            Array.Copy(_head, Position, buffer, offset, count);
         }
-        else if (_position >= tailStart)
+        else if (Position >= tailStart)
         {
-            Array.Copy(_tail, _position - tailStart, buffer, offset, count);
+            Array.Copy(_tail, Position - tailStart, buffer, offset, count);
         }
         else
         {
             throw new IOException("this archive is packed inside the installer and its list of files is not at the end");
         }
 
-        _position += count;
+        Position += count;
         return count;
     }
 
@@ -46,17 +45,17 @@ internal class HeadTailView : Stream
     public override bool CanSeek => true;
     public override bool CanWrite => false;
     public override long Length => _length;
-    public override long Position { get => _position; set => _position = value; }
+    public override long Position { get; set; }
 
     public override long Seek(long offset, SeekOrigin origin)
     {
-        _position = origin switch
+        Position = origin switch
         {
             SeekOrigin.Begin => offset,
-            SeekOrigin.Current => _position + offset,
+            SeekOrigin.Current => Position + offset,
             _ => _length + offset
         };
-        return _position;
+        return Position;
     }
 
     public override void Flush() { }

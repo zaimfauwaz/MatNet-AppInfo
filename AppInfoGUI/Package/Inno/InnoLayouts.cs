@@ -28,7 +28,8 @@ public static class InnoLayouts
     // The text at the start of the setup data, like "Inno Setup Setup Data (6.4.3)"
     public static InnoLayout? Find(string setupId)
     {
-        Match version = Regex.Match(setupId, @"\(([\d.]+)\)");
+        // The text comes from the file being inspected, so the match is given a time limit
+        Match version = Regex.Match(setupId, @"\(([\d.]+)\)", RegexOptions.None, TimeSpan.FromSeconds(1));
         if (!version.Success) return null;
 
         InnoLayout? layout = Known.FirstOrDefault(k => k.SetupId == version.Groups[1].Value);

@@ -22,13 +22,8 @@ internal static class LocationDescriber
             (Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Program Files (x86)")
         };
 
-        foreach (var place in places)
-        {
-            if (IsInside(folder, place.Folder))
-                return place.Label;
-        }
-
-        return "Other location";
+        string? label = places.Where(place => IsInside(folder, place.Folder)).Select(place => place.Label).FirstOrDefault();
+        return label ?? "Other location";
     }
 
     // True if the folder is the parent itself or anywhere below it

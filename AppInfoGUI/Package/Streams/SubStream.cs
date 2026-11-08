@@ -9,7 +9,6 @@ internal class SubStream : Stream
     readonly Stream _inner;
     readonly long _start;
     readonly long _length;
-    long _position;
 
     public SubStream(Stream inner, long start, long length)
     {
@@ -23,32 +22,28 @@ internal class SubStream : Stream
     public override bool CanWrite => false;
     public override long Length => _length;
 
-    public override long Position
-    {
-        get => _position;
-        set => _position = value;
-    }
+    public override long Position { get; set; }
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        count = (int)Math.Min(count, Math.Max(0, _length - _position));
+        count = (int)Math.Min(count, Math.Max(0, _length - Position));
         if (count == 0) return 0;
 
-        _inner.Position = _start + _position;
+        _inner.Position = _start + Position;
         int read = _inner.Read(buffer, offset, count);
-        _position += read;
+        Position += read;
         return read;
     }
 
     public override long Seek(long offset, SeekOrigin origin)
     {
-        _position = origin switch
+        Position = origin switch
         {
             SeekOrigin.Begin => offset,
-            SeekOrigin.Current => _position + offset,
+            SeekOrigin.Current => Position + offset,
             _ => _length + offset
         };
-        return _position;
+        return Position;
     }
 
     public override void Flush() { }

@@ -3,20 +3,22 @@ namespace AppInfoGUI.Crypto
 {
     public class SignatureResult
     {
+        const string NotAvailable = "Not available";
+
         public string Verdict { get; set; } = "";
         public bool IsValid { get; set; }
         public string SignatureType { get; set; } = "";
-        public string Publisher { get; set; } = "Not available";
-        public string Issuer { get; set; } = "Not available";
-        public string Thumbprint { get; set; } = "Not available";
-        public string ValidFrom { get; set; } = "Not available";
-        public string ValidTo { get; set; } = "Not available";
-        public string CatalogFile { get; set; } = "Not available";
-        public string Subject { get; set; } = "Not available";
-        public string SerialNumber { get; set; } = "Not available";
-        public string Algorithm { get; set; } = "Not available";
-        public string Expiry { get; set; } = "Not available";
-        public string Chain { get; set; } = "Not available";
-        public string Validation { get; set; } = "Not available";
+        public string Publisher { get; set; } = NotAvailable;
+        public string Issuer { get; set; } = NotAvailable;
+        public string Thumbprint { get; set; } = NotAvailable;
+        public string ValidFrom { get; set; } = NotAvailable;
+        public string ValidTo { get; set; } = NotAvailable;
+        public string CatalogFile { get; set; } = NotAvailable;
+        public string Subject { get; set; } = NotAvailable;
+        public string SerialNumber { get; set; } = NotAvailable;
+        public string Algorithm { get; set; } = NotAvailable;
+        public string Expiry { get; set; } = NotAvailable;
+        public string Chain { get; set; } = NotAvailable;
+        public string Validation { get; set; } = NotAvailable;
     }
 }

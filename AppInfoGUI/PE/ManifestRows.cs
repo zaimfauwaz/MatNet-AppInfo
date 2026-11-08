@@ -6,6 +6,8 @@ namespace AppInfoGUI.PE;
 // Turns the manifest text into readable rows
 internal static class ManifestRows
 {
+    const string NotStated = "Not stated";
+
     public static void Fill(List<DetailRow> rows, string path)
     {
         string? text;
@@ -40,8 +42,8 @@ internal static class ManifestRows
         // Each row is read on its own, so one odd entry never hides the others
         rows.Add(new("Runs as", Safe.Text(() => ExecutionLevel(root))));
         rows.Add(new("Identity", Safe.Text(() => Identity(root))));
-        rows.Add(new("Screen scaling (DPI)", Safe.Text(() => Setting(root, "dpiAwareness") ?? Setting(root, "dpiAware") ?? "Not stated")));
-        rows.Add(new("Long paths", Safe.Text(() => Setting(root, "longPathAware") ?? "Not stated")));
+        rows.Add(new("Screen scaling (DPI)", Safe.Text(() => Setting(root, "dpiAwareness") ?? Setting(root, "dpiAware") ?? NotStated)));
+        rows.Add(new("Long paths", Safe.Text(() => Setting(root, "longPathAware") ?? NotStated)));
         rows.Add(new("Supported Windows", Safe.Text(() => SupportedWindows(root))));
         rows.Add(new("Visual styles", Safe.Text(() => VisualStyles(root))));
     }
@@ -73,7 +75,7 @@ internal static class ManifestRows
             "asInvoker" => "The user who starts it (normal)",
             "highestAvailable" => "The highest rights the user has (asks for administrator if the user is one)",
             "requireAdministrator" => "Administrator (always asks for permission)",
-            null => "Not stated",
+            null => NotStated,
             _ => levelName
         };
 
@@ -88,7 +90,7 @@ internal static class ManifestRows
         string name = Attribute(identity, "name") ?? "";
         string version = Attribute(identity, "version") ?? "";
         string text = $"{name} {version}".Trim();
-        return text == "" ? "Not stated" : text;
+        return text == "" ? NotStated : text;
     }
 
     static string? Setting(XElement root, string name) =>
@@ -104,7 +106,7 @@ internal static class ManifestRows
             names.Add(WindowsName(id));
         }
 
-        return names.Count == 0 ? "Not stated" : string.Join(", ", names);
+        return names.Count == 0 ? NotStated : string.Join(", ", names);
     }
 
     // The fixed IDs Microsoft publishes for each Windows version

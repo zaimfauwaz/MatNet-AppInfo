@@ -12,10 +12,11 @@ internal class MsZipDecoder : ICabDecoder
     static readonly int[] CodeLengthOrder = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 
     const int MaxBits = 15;
+    const string Damaged = "the packed data is damaged";
 
     public void Decode(byte[] block, int size, GrowingBuffer output)
     {
-        if (block.Length < 2 || block[0] != 'C' || block[1] != 'K') throw new InvalidDataException("the packed data is damaged");
+        if (block.Length < 2 || block[0] != 'C' || block[1] != 'K') throw new InvalidDataException(Damaged);
 
         int start = output.Length;
         var bits = new DeflateBits(block, 2);
@@ -29,11 +30,11 @@ internal class MsZipDecoder : ICabDecoder
                 case 0: Stored(bits, output); break;
                 case 1: Compressed(bits, output, FixedLiterals(), FixedDistances()); break;
                 case 2: Dynamic(bits, output); break;
-                default: throw new InvalidDataException("the packed data is damaged");
+                default: throw new InvalidDataException(Damaged);
             }
         } while (!last);
 
-        if (output.Length - start != size) throw new InvalidDataException("the packed data is damaged");
+        if (output.Length - start != size) throw new InvalidDataException(Damaged);
     }
 
     static void Stored(DeflateBits bits, GrowingBuffer output)
@@ -50,7 +51,7 @@ internal class MsZipDecoder : ICabDecoder
         int literalCount = bits.Read(5) + 257;
         int distanceCount = bits.Read(5) + 1;
         int codeLengthCount = bits.Read(4) + 4;
-        if (literalCount > 286 || distanceCount > 30) throw new InvalidDataException("the packed data is damaged");
+        if (literalCount > 286 || distanceCount > 30) throw new InvalidDataException(Damaged);
 
         // The lengths of the codes are themselves packed with a small code
         var lengthCodeLengths = new int[19];
@@ -82,14 +83,14 @@ internal class MsZipDecoder : ICabDecoder
             int repeat;
             if (symbol == 16)
             {
-                if (i == 0) throw new InvalidDataException("the packed data is damaged");
+                if (i == 0) throw new InvalidDataException(Damaged);
                 value = lengths[i - 1];
                 repeat = 3 + bits.Read(2);
             }
             else if (symbol == 17) repeat = 3 + bits.Read(3);
             else repeat = 11 + bits.Read(7);
 
-            if (i + repeat > total) throw new InvalidDataException("the packed data is damaged");
+            if (i + repeat > total) throw new InvalidDataException(Damaged);
             for (int n = 0; n < repeat; n++) lengths[i++] = value;
         }
 
@@ -105,11 +106,11 @@ internal class MsZipDecoder : ICabDecoder
             if (symbol == 256) return;
 
             symbol -= 257;
-            if (symbol >= LengthBase.Length) throw new InvalidDataException("the packed data is damaged");
+            if (symbol >= LengthBase.Length) throw new InvalidDataException(Damaged);
             int length = LengthBase[symbol] + bits.Read(LengthExtra[symbol]);
 
             int slot = distances.Decode(bits);
-            if (slot >= DistanceBase.Length) throw new InvalidDataException("the packed data is damaged");
+            if (slot >= DistanceBase.Length) throw new InvalidDataException(Damaged);
             int distance = DistanceBase[slot] + bits.Read(DistanceExtra[slot]);
 
             output.CopyMatch(distance, length);
