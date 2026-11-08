@@ -35,39 +35,43 @@ internal static class CmsReader
 
             AsnReader? attributes = signer.UnsignedAttributes;
             while (attributes != null && attributes.HasData)
-            {
-                AsnReader attribute = attributes.ReadSequence();
-                string oid = attribute.ReadObjectIdentifier();
-                AsnReader values = attribute.ReadSetOf();
-
-                try
-                {
-                    if (oid == CountersignatureOid)
-                    {
-                        Signer stamp = ReadSigner(values.ReadSequence(), envelope.Certificates);
-                        (signedOn, timestampBy) = (stamp.SigningTime, NameOf(stamp.Certificate));
-                    }
-                    else if (oid == TimestampTokenOid)
-                    {
-                        (signedOn, timestampBy) = ReadTimestampToken(values.ReadEncodedValue().ToArray());
-                    }
-                    else if (oid == NestedSignatureOid)
-                    {
-                        while (values.HasData)
-                            nested.Add(values.ReadEncodedValue().ToArray());
-                    }
-                }
-                catch (Exception ex) when (ex is AsnContentException or CryptographicException)
-                {
-                    // a timestamp we cannot read: the signature is still listed, without a time
-                }
-            }
+                ReadUnsignedAttribute(attributes, envelope.Certificates, nested, ref signedOn, ref timestampBy);
 
             all.Add(new CmsSignature(signer.Certificate, CmsSignature.DigestName(signer.DigestOid), signedOn, timestampBy));
         }
 
         foreach (byte[] inner in nested)
             AddSignatures(inner, all);
+    }
+
+    static void ReadUnsignedAttribute(AsnReader attributes, List<X509Certificate2> certificates, List<byte[]> nested,
+        ref DateTime? signedOn, ref string? timestampBy)
+    {
+        AsnReader attribute = attributes.ReadSequence();
+        string oid = attribute.ReadObjectIdentifier();
+        AsnReader values = attribute.ReadSetOf();
+
+        try
+        {
+            if (oid == CountersignatureOid)
+            {
+                Signer stamp = ReadSigner(values.ReadSequence(), certificates);
+                (signedOn, timestampBy) = (stamp.SigningTime, NameOf(stamp.Certificate));
+            }
+            else if (oid == TimestampTokenOid)
+            {
+                (signedOn, timestampBy) = ReadTimestampToken(values.ReadEncodedValue().ToArray());
+            }
+            else if (oid == NestedSignatureOid)
+            {
+                while (values.HasData)
+                    nested.Add(values.ReadEncodedValue().ToArray());
+            }
+        }
+        catch (Exception ex) when (ex is AsnContentException or CryptographicException)
+        {
+            // a timestamp we cannot read: the signature is still listed, without a time
+        }
     }
 
     static Signer ReadSigner(AsnReader info, List<X509Certificate2> certificates)

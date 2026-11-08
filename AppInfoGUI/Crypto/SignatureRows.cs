@@ -51,7 +51,7 @@ internal static class SignatureRows
 
     static string Describe(SignatureEntry e, DateTime now)
     {
-        string mark = !e.WindowsChecked ? "•" : e.IsValid ? "✔" : "✖";
+        string mark = Mark(e);
 
         var lines = new List<string>
         {
@@ -64,6 +64,12 @@ internal static class SignatureRows
         };
 
         return string.Join("\n", lines);
+    }
+
+    static string Mark(SignatureEntry e)
+    {
+        if (!e.WindowsChecked) return "•";
+        return e.IsValid ? "✔" : "✖";
     }
 
     static string Dates(SignatureEntry e, DateTime now)
