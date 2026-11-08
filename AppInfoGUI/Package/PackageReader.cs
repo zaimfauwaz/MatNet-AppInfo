@@ -1,4 +1,5 @@
 ﻿using AppInfoGUI.Info;
+using AppInfoGUI.Package.Streams;
 using System.IO;
 
 namespace AppInfoGUI.Package;
@@ -13,7 +14,8 @@ public static class PackageReader
     public static Detection Detect(string path) => PackageDetector.Detect(path);
 
     // Slow for big installers: lists what is inside. Call it after `Detect` found a format.
-    public static PackageInfo Read(string path, Detection detection)
+    // Cancelling stops it at the next read and gives back an info that says so.
+    public static PackageInfo Read(string path, Detection detection, CancellationToken cancel = default)
     {
         PackageFormat format = detection.Format ?? throw new ArgumentException("the file is not a package");
         var info = new PackageInfo { Format = format, ExtraBytes = detection.Overlay?.Length ?? 0 };
@@ -26,9 +28,18 @@ public static class PackageReader
 
         try
         {
-            using FileStream stream = File.OpenRead(path);
+            using FileStream file = File.OpenRead(path);
+            var stream = new CancellableStream(file, cancel);
             List<PackageEntry> all = format.Lister.List(stream, detection.Overlay);
+
+            // A lister may have caught the cancel as a read problem, so check again
+            cancel.ThrowIfCancellationRequested();
             Fill(info, all);
+        }
+        catch (OperationCanceledException)
+        {
+            info.Cancelled = true;
+            info.Message = format.Name + ". Reading was cancelled, so the files inside are not listed.";
         }
         catch (Exception ex)
         {

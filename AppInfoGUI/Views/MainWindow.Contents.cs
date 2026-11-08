@@ -1,8 +1,8 @@
-using AppInfoGUI.Installer;
+﻿using AppInfoGUI.Installer;
 
 namespace AppInfoGUI
 {
-    // The Installer Contents tab (.msi only)
+    // The Package Contents tab for .msi files
     public partial class MainWindow
     {
         async Task LoadContentsAsync(string path)

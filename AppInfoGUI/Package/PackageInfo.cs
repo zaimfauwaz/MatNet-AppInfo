@@ -1,4 +1,4 @@
-namespace AppInfoGUI.Package;
+﻿namespace AppInfoGUI.Package;
 
 // What a package holds, ready to show
 public class PackageInfo
@@ -15,4 +15,5 @@ public class PackageInfo
     public int Disguised { get; set; }
     public int Encrypted { get; set; }
     public bool Listed { get; set; }
+    public bool Cancelled { get; set; }                     // the person stopped the reading
 }

@@ -11,6 +11,7 @@ namespace AppInfoGUI
         public MainWindow()
         {
             InitializeComponent();
+            AttachCopyMenus();
         }
 
         async void Window_Loaded(object sender, RoutedEventArgs e)

@@ -1,10 +1,20 @@
-using AppInfoGUI.Package;
+﻿using AppInfoGUI.Package;
+using System.Windows;
 
 namespace AppInfoGUI
 {
     // The Package Contents tab: what is inside an installer or self-extracting .exe
     public partial class MainWindow
     {
+        CancellationTokenSource? _packageCancel;
+
+        void CancelPackage_Click(object sender, RoutedEventArgs e)
+        {
+            _packageCancel?.Cancel();
+            CancelPackageButton.IsEnabled = false;
+            PackageMessage.Text = "Cancelling...";
+        }
+
         async Task LoadPackageAsync(string path)
         {
             if (!_kind.IsProgram)
@@ -20,9 +30,28 @@ namespace AppInfoGUI
                 PackageTab.Visibility = VisibleIf(true);
                 PackageMessage.Text = detection.Format.Name + ". Reading the files inside, this can take a while for big installers...";
 
-                PackageInfo info = await Task.Run(() => PackageReader.Read(path, detection));
+                using var cancel = new CancellationTokenSource();
+                _packageCancel = cancel;
+                CancelPackageButton.IsEnabled = true;
+                CancelPackageButton.Visibility = VisibleIf(true);
+
+                PackageInfo info;
+                try
+                {
+                    info = await Task.Run(() => PackageReader.Read(path, detection, cancel.Token));
+                }
+                finally
+                {
+                    CancelPackageButton.Visibility = VisibleIf(false);
+                    _packageCancel = null;
+                }
+
                 PackageMessage.Text = info.Message;
                 PackageGrid.ItemsSource = info.Entries;
+
+                // Stopped by the person: the contents were not checked, and that is never treated as fine
+                if (info.Cancelled)
+                    _summary.Failures.Add("package contents (cancelled)");
 
                 _summary.PackageName = info.Format.Name;
                 _summary.PackageListed = info.Listed;

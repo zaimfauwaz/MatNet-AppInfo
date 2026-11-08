@@ -1,6 +1,6 @@
-namespace AppInfoGUI.Installer;
+﻿namespace AppInfoGUI.Installer;
 
-// One row in each of the tables on the "Installer Contents" tab
+// One row in each of the tables on the "Package Contents" tab
 public record FileEntry(string Name, string Folder, string Size);
 public record RegistryEntry(string Root, string Key, string Name, string Value);
 public record ServiceEntry(string Name, string DisplayName, string Start, string Account);

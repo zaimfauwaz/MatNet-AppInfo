@@ -8,9 +8,14 @@
         WindowStartupLocation="CenterOwner"
         Title="MatNet AppInfo" Height="620" Width="900" MinHeight="560" MinWidth="800" Loaded="Window_Loaded">
     <Window.Resources>
+        <!-- Right-click menu for the label/value rows -->
+        <ContextMenu x:Key="RowMenu">
+            <MenuItem Header="Copy row" Click="CopyDetailRow_Click"/>
+            <MenuItem Header="Copy value" Click="CopyDetailValue_Click"/>
+        </ContextMenu>
         <!-- One row of "label: value", used by every tab that lists details -->
         <DataTemplate x:Key="RowTemplate">
-            <Grid Margin="0,0,0,6">
+            <Grid Margin="0,0,0,6" ContextMenu="{StaticResource RowMenu}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180"/>
                     <ColumnDefinition Width="*"/>
@@ -18,7 +23,7 @@
                 <TextBlock Text="{Binding Label}" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,8,0"/>
                 <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}"
                          Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Window}}"
-                         IsReadOnly="True" BorderThickness="0"
+                         IsReadOnly="True" BorderThickness="0" ContextMenu="{StaticResource RowMenu}"
                          Background="Transparent" TextWrapping="Wrap"/>
             </Grid>
         </DataTemplate>
@@ -159,13 +164,21 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="PackageMessage" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="PackageMessage" Foreground="Gray" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <Button x:Name="CancelPackageButton" Grid.Column="1" Content="Cancel" Padding="12,4"
+                                Margin="12,0,0,0" Visibility="Collapsed" Click="CancelPackage_Click"/>
+                    </Grid>
 
                     <DataGrid x:Name="PackageGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="File" Binding="{Binding DisplayPath}" Width="3*"/>
-                            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="Auto"/>
-                            <DataGridTextColumn Header="Type" Binding="{Binding TypeText}" Width="*"/>
+                            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="200"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding TypeText}" Width="2*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -197,7 +210,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem x:Name="InstallsTab" Header="Installer Contents" Visibility="Collapsed">
+            <TabItem x:Name="InstallsTab" Header="Package Contents" Visibility="Collapsed">
                 <Grid Margin="16,8,16,16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -210,9 +223,9 @@
                         <TabItem x:Name="FilesSubTab" Header="Files">
                             <DataGrid x:Name="FilesGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="File" Binding="{Binding Name}" Width="*"/>
+                                    <DataGridTextColumn Header="File" Binding="{Binding Name}" Width="3*"/>
+                                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="200"/>
                                     <DataGridTextColumn Header="Goes to" Binding="{Binding Folder}" Width="2*"/>
-                                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="120"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>
