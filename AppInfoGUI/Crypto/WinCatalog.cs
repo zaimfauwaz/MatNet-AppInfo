@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Microsoft.Win32.SafeHandles;
+using System.Runtime.InteropServices;
 
 namespace AppInfoGUI.Crypto;
 
@@ -17,7 +18,7 @@ internal static class WinCatalog
 
     [DllImport("wintrust.dll", ExactSpelling = true)]
     public static extern bool CryptCATAdminCalcHashFromFileHandle2(
-        IntPtr catAdmin, IntPtr fileHandle, ref uint hashSize, byte[]? hash, uint flags);
+        IntPtr catAdmin, SafeFileHandle fileHandle, ref uint hashSize, byte[]? hash, uint flags);
 
     [DllImport("wintrust.dll", ExactSpelling = true)]
     public static extern IntPtr CryptCATAdminEnumCatalogFromHash(

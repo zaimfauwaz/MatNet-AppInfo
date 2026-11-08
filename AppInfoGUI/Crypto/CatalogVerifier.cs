@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Microsoft.Win32.SafeHandles;
+using System.Runtime.InteropServices;
 using System.IO;
 
 namespace AppInfoGUI.Crypto;
@@ -23,7 +24,7 @@ public static class CatalogVerifier
     {
         catalogFile = "";
         using var file = File.OpenRead(path);
-        IntPtr fileHandle = file.SafeFileHandle.DangerousGetHandle();
+        SafeFileHandle fileHandle = file.SafeFileHandle;
 
         // 1. Open the catalog service
         if (!WinCatalog.CryptCATAdminAcquireContext2(out IntPtr catAdmin, IntPtr.Zero, algorithm, IntPtr.Zero, 0))
