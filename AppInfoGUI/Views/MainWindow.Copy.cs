@@ -1,4 +1,4 @@
-using AppInfoGUI.Info;
+﻿using AppInfoGUI.Info;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +12,7 @@ namespace AppInfoGUI
     {
         void AttachCopyMenus()
         {
-            foreach (DataGrid grid in new[] { PackageGrid, FilesGrid, RegistryGrid, ServicesGrid, ActionsGrid, DependencyGrid })
+            foreach (DataGrid grid in new[] { PackageGrid, FilesGrid, RegistryGrid, ServicesGrid, ActionsGrid, DependencyGrid, StringsGrid })
             {
                 var copy = new MenuItem { Header = "Copy row" };
                 copy.Click += (_, _) => ApplicationCommands.Copy.Execute(null, grid);   // the grid's own copy: cells separated by tabs

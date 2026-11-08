@@ -301,6 +301,31 @@
                                Text="Only the DLLs needed at start-up are listed. DLLs a program loads later are not shown. Signatures are checked only for DLLs in the same folder as the file."/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Strings">
+                <Grid Margin="16,8,16,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="StringsMessage" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                    <WrapPanel x:Name="StringButtons" Grid.Row="1"/>
+
+                    <DataGrid x:Name="StringsGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" SelectionMode="Single" HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Kind" Binding="{Binding Kind}" Width="120"/>
+                            <DataGridTextColumn Header="Text" Binding="{Binding Text}" Width="*"/>
+                            <DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Grid.Row="3" Margin="0,8,0,0" FontSize="11" Foreground="Gray" TextWrapping="Wrap"
+                               Text="Readable text found inside the file. Only the interesting kinds are listed, not every word. Stays on this PC and only reads the file. A &quot;Run&quot; registry key or a hard-coded IP address is worth a look, most of the rest is ordinary."/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Hashes">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="16,4,16,16">

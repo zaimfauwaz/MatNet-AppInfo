@@ -53,6 +53,7 @@ namespace AppInfoGUI
                 LoadLibraryAsync(path),
                 LoadDriverAsync(path),
                 LoadHashesAsync(path),
+                LoadStringsAsync(path),
                 LoadDependenciesAsync(path),
                 LoadContentsAsync(path),
                 LoadPackageAsync(path),
