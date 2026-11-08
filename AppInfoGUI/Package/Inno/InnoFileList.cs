@@ -44,7 +44,7 @@ public static class InnoFileList
         Skip(reader, layout.Delete, counts[next++]);   // delete on install
         Skip(reader, layout.Delete, counts[next++]);   // delete on uninstall
         Skip(reader, layout.Run, counts[next++]);
-        Skip(reader, layout.Run, counts[next++]);      // run on uninstall
+        Skip(reader, layout.Run, counts[next]);        // run on uninstall
 
         // The second block holds one data entry per stored file, with its size
         var sizes = new long[dataCount];

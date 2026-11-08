@@ -67,13 +67,14 @@ internal static class ManifestRows
         XElement? level = Find(root, "requestedExecutionLevel").FirstOrDefault();
         if (level == null) return "Not stated (Windows decides)";
 
-        string text = Attribute(level, "level") switch
+        string? levelName = Attribute(level, "level");
+        string text = levelName switch
         {
             "asInvoker" => "The user who starts it (normal)",
             "highestAvailable" => "The highest rights the user has (asks for administrator if the user is one)",
             "requireAdministrator" => "Administrator (always asks for permission)",
-            string other => other,
-            null => "Not stated"
+            null => "Not stated",
+            _ => levelName
         };
 
         // UI access lets a program control other programs' windows

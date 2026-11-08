@@ -73,9 +73,14 @@ public static class DriverReader
             // Shown below as "could not check"
         }
 
-        rows.Add(new("Registered on this PC", !searched ? "Could not check"
-            : id == null ? "No - Windows has no registration pointing to this file"
-            : $"Yes - {id}"));
+        rows.Add(new("Registered on this PC", RegistrationText(searched, id)));
+    }
+
+    static string RegistrationText(bool searched, string? id)
+    {
+        if (!searched) return "Could not check";
+        if (id == null) return "No - Windows has no registration pointing to this file";
+        return $"Yes - {id}";
     }
 
     static string StandardFolder(string path)

@@ -19,9 +19,14 @@ public class FileKind
     public bool IsDriver => Extension is ".sys" or ".ocx";
 
     // The name of the first tab
-    public string DetailsTabTitle =>
-        IsInstaller ? "Installer Details"
-        : IsLibrary ? "Library Information"
-        : IsDriver ? "Driver Details"
-        : "Application Details";   // .exe and anything else
+    public string DetailsTabTitle
+    {
+        get
+        {
+            if (IsInstaller) return "Installer Details";
+            if (IsLibrary) return "Library Information";
+            if (IsDriver) return "Driver Details";
+            return "Application Details";   // .exe and anything else
+        }
+    }
 }

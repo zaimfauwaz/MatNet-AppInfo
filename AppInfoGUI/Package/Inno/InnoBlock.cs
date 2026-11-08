@@ -5,7 +5,7 @@ namespace AppInfoGUI.Package.Inno;
 
 // A packed block of the setup data. It is stored as a small header (checksum, size, "is packed"),
 // then the data in chunks of 4096 bytes, each with its own 4-byte checksum.
-public class InnoBlock : IDisposable
+public sealed class InnoBlock : IDisposable
 {
     const int ChunkSize = 4096;
     const long MaxStoredSize = 64 * 1024 * 1024;

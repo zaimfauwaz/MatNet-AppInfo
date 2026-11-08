@@ -17,7 +17,6 @@ public class CabArchive
     record Folder(long FirstBlock, int BlockCount, int Type);
 
     readonly Stream _stream;
-    readonly long _start;
     readonly int _blockReserve;
     readonly List<Folder> _folders = new();
 
@@ -26,7 +25,6 @@ public class CabArchive
     public CabArchive(Stream stream, long start)
     {
         _stream = stream;
-        _start = start;
 
         stream.Position = start;
         var header = new byte[36];

@@ -36,6 +36,7 @@ public static class SignatureVerifier
         }
         catch (Exception)
         {
+            // The certificate details are extra. The verdict above is still correct without them.
         }
 
         return result;

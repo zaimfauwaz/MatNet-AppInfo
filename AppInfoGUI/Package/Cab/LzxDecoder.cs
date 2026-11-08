@@ -102,11 +102,16 @@ internal class LzxDecoder : ICabDecoder
     // The filter turned the target of each "call" instruction (E8) into an absolute address. This puts it back.
     void UndoFilter(byte[] frame, int frameStart)
     {
-        int position = frameStart;
-        for (int i = 0; i < frame.Length - 10; i++, position++)
+        int i = 0;
+        while (i < frame.Length - 10)
         {
-            if (frame[i] != 0xE8) continue;
+            if (frame[i] != 0xE8)
+            {
+                i++;
+                continue;
+            }
 
+            int position = frameStart + i;
             int absolute = BitConverter.ToInt32(frame, i + 1);
             if (absolute >= -position && absolute < _intelFileSize)
             {
@@ -114,8 +119,7 @@ internal class LzxDecoder : ICabDecoder
                 BitConverter.TryWriteBytes(frame.AsSpan(i + 1, 4), relative);
             }
 
-            i += 4;
-            position += 4;
+            i += 5;   // the E8 byte and its 4-byte address
         }
     }
 

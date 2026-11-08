@@ -57,13 +57,29 @@ internal class MsZipDecoder : ICabDecoder
         for (int i = 0; i < codeLengthCount; i++) lengthCodeLengths[CodeLengthOrder[i]] = bits.Read(3);
         var lengthCode = new CanonicalHuffman(lengthCodeLengths, 0, 19, 7);
 
-        var lengths = new int[literalCount + distanceCount];
-        for (int i = 0; i < lengths.Length;)
+        int[] lengths = ReadCodeLengths(bits, lengthCode, literalCount + distanceCount);
+
+        Compressed(bits, output,
+            new CanonicalHuffman(lengths, 0, literalCount, MaxBits),
+            new CanonicalHuffman(lengths, literalCount, distanceCount, MaxBits));
+    }
+
+    // Symbols 0-15 are a length as is. 16 repeats the previous length, 17 and 18 repeat zero.
+    static int[] ReadCodeLengths(DeflateBits bits, CanonicalHuffman lengthCode, int total)
+    {
+        var lengths = new int[total];
+        int i = 0;
+        while (i < total)
         {
             int symbol = lengthCode.Decode(bits);
-            if (symbol < 16) { lengths[i++] = symbol; continue; }
+            if (symbol < 16)
+            {
+                lengths[i++] = symbol;
+                continue;
+            }
 
-            int value = 0, repeat;
+            int value = 0;
+            int repeat;
             if (symbol == 16)
             {
                 if (i == 0) throw new InvalidDataException("the packed data is damaged");
@@ -73,13 +89,11 @@ internal class MsZipDecoder : ICabDecoder
             else if (symbol == 17) repeat = 3 + bits.Read(3);
             else repeat = 11 + bits.Read(7);
 
-            if (i + repeat > lengths.Length) throw new InvalidDataException("the packed data is damaged");
-            while (repeat-- > 0) lengths[i++] = value;
+            if (i + repeat > total) throw new InvalidDataException("the packed data is damaged");
+            for (int n = 0; n < repeat; n++) lengths[i++] = value;
         }
 
-        Compressed(bits, output,
-            new CanonicalHuffman(lengths, 0, literalCount, MaxBits),
-            new CanonicalHuffman(lengths, literalCount, distanceCount, MaxBits));
+        return lengths;
     }
 
     static void Compressed(DeflateBits bits, GrowingBuffer output, CanonicalHuffman literals, CanonicalHuffman distances)
@@ -105,8 +119,17 @@ internal class MsZipDecoder : ICabDecoder
     static CanonicalHuffman FixedLiterals()
     {
         var lengths = new int[288];
-        for (int i = 0; i < 288; i++) lengths[i] = i < 144 ? 8 : i < 256 ? 9 : i < 280 ? 7 : 8;
+        for (int i = 0; i < 288; i++) lengths[i] = FixedLiteralLength(i);
         return new CanonicalHuffman(lengths, 0, 288, MaxBits);
+    }
+
+    // The fixed code: 0-143 use 8 bits, 144-255 use 9, 256-279 use 7, 280-287 use 8
+    static int FixedLiteralLength(int symbol)
+    {
+        if (symbol < 144) return 8;
+        if (symbol < 256) return 9;
+        if (symbol < 280) return 7;
+        return 8;
     }
 
     static CanonicalHuffman FixedDistances()
