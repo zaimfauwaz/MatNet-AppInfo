@@ -15,7 +15,7 @@ namespace AppInfoGUI
 
             try
             {
-                StringsResult result = await Task.Run(() => StringScanner.Read(path));
+                StringsResult result = await Task.Run(() => StringScanner.Read(path), CancellationToken.None);
 
                 _foundStrings = result.Items;
                 StringsMessage.Text = result.Message;

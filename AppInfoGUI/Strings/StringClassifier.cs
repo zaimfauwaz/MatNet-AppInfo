@@ -8,26 +8,32 @@ internal static partial class StringClassifier
     public static IEnumerable<(string Kind, string Text, int Index)> Find(string text)
     {
         if (text.Contains("://"))
-            foreach (Match m in WebPattern().Matches(text))
-                yield return (StringKinds.Web, m.Value, m.Index);
+            foreach ((string, string, int) hit in Matches(StringKinds.Web, WebPattern(), text))
+                yield return hit;
 
         if (text.Contains('@'))
-            foreach (Match m in EmailPattern().Matches(text))
-                yield return (StringKinds.Email, m.Value, m.Index);
+            foreach ((string, string, int) hit in Matches(StringKinds.Email, EmailPattern(), text))
+                yield return hit;
 
         if (text.Contains('.'))
-            foreach (Match m in IpPattern().Matches(text))
-                if (!LooksLikeVersion(m.Value))
-                    yield return (StringKinds.Ip, m.Value, m.Index);
+            foreach ((string, string, int) hit in Matches(StringKinds.Ip, IpPattern(), text, m => !LooksLikeVersion(m.Value)))
+                yield return hit;
 
-        if (text.Contains('\\'))
-        {
-            foreach (Match m in RegistryPattern().Matches(text))
-                yield return (StringKinds.Registry, m.Value.TrimEnd(), m.Index);
+        if (!text.Contains('\\'))
+            yield break;
 
-            foreach (Match m in PathPattern().Matches(text))
-                yield return (StringKinds.Path, m.Value.TrimEnd(), m.Index);
-        }
+        foreach ((string, string, int) hit in Matches(StringKinds.Registry, RegistryPattern(), text, trim: true))
+            yield return hit;
+
+        foreach ((string, string, int) hit in Matches(StringKinds.Path, PathPattern(), text, trim: true))
+            yield return hit;
+    }
+
+    static IEnumerable<(string Kind, string Text, int Index)> Matches(
+        string kind, Regex pattern, string text, Func<Match, bool>? keep = null, bool trim = false)
+    {
+        foreach (Match m in pattern.Matches(text).Where(m => keep == null || keep(m)))
+            yield return (kind, trim ? m.Value.TrimEnd() : m.Value, m.Index);
     }
 
     // Version numbers and certificate identifiers (OIDs) look like addresses. These are the patterns we can tell apart safely:
