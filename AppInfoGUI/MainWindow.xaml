@@ -339,16 +339,10 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Product Information (AI)">
-                <Grid/>
-            </TabItem>
             <TabItem Header="Digital Signatures">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ItemsControl x:Name="SignatureList" Margin="16" ItemTemplate="{StaticResource RowTemplate}"/>
                 </ScrollViewer>
-            </TabItem>
-            <TabItem Header="VirusTotal">
-                <Grid/>
             </TabItem>
         </TabControl>
     </Grid>
