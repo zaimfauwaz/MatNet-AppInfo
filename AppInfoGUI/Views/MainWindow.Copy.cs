@@ -65,6 +65,7 @@ namespace AppInfoGUI
             }
             catch (COMException)
             {
+                // The clipboard was busy. Copying again works, so there is nothing to report.
             }
         }
     }
